@@ -58,6 +58,10 @@ func (m AppModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			m.rows[i] = row.New(p, m.columnWidths)
 		}
 		m.loading = ""
+
+	case UpdateResultCmd:
+		return m, tea.Quit
+
 	case tea.KeyMsg:
 		cmds = append(cmds, m.handleKeyPress(msg))
 	}
