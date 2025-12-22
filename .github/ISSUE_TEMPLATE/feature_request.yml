@@ -21,8 +21,6 @@ body:
       label: Proposed Solution
       description: Describe the solution you'd like
       placeholder: I would like to see...
-    validations:
-      required: true
 
   - type: textarea
     id: alternatives
