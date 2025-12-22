@@ -5,12 +5,15 @@ import (
 
 	"updep/pkg/components/row"
 	"updep/pkg/config"
+	packagemanager "updep/pkg/packageManager"
 
 	"github.com/charmbracelet/bubbles/help"
 	"github.com/charmbracelet/bubbles/spinner"
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/lipgloss"
 )
+
+var pm = packagemanager.New()
 
 type AppModel struct {
 	loading      string
