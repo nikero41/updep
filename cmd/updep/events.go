@@ -6,22 +6,22 @@ import (
 	"time"
 
 	"updep/pkg/components/row"
-	packagemodel "updep/pkg/models/package"
+	packagemanager "updep/pkg/packageManager"
 
 	tea "github.com/charmbracelet/bubbletea"
 )
 
-type OutdatedPackagesMsg []packagemodel.Package
+type OutdatedPackagesCmd []packagemanager.Package
 
 func getOutdatedPackages() tea.Msg {
-	result, err := packagemodel.FetchOutdatedPackages()
+	result, err := pm.GetOutdated()
 	if err != nil {
 		panic(err)
 	}
 
-	packages := []packagemodel.Package{}
+	packages := []packagemanager.Package{}
 	for packageName, value := range result {
-		pkg, err := packagemodel.New(
+		pkg, err := packagemanager.NewPackage(
 			packageName,
 			value.Wanted,
 			value.Latest,

@@ -2,20 +2,19 @@ package row
 
 import (
 	"updep/pkg/config"
-	packagemodel "updep/pkg/models/package"
-	"updep/pkg/models/version"
+	packagemanager "updep/pkg/packageManager"
 
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/lipgloss"
 )
 
 type Row struct {
-	Pkg          packagemodel.Package
-	Target       *version.Version
+	Pkg          packagemanager.Package
+	Target       *packagemanager.Version
 	ColumnWidths [config.ColumnCount]int
 }
 
-func New(pkg packagemodel.Package, columnWidths [config.ColumnCount]int) Row {
+func New(pkg packagemanager.Package, columnWidths [config.ColumnCount]int) Row {
 	return Row{
 		Pkg:          pkg,
 		ColumnWidths: columnWidths,

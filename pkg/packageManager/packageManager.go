@@ -1,10 +1,30 @@
-package packagemodel
+package packagemanager
 
 import (
 	"encoding/json"
+	"errors"
+	"fmt"
+	"os"
 	"strings"
-	"time"
 )
+
+const (
+	Npm = iota
+	Yarn
+	Pnpm
+	Bun
+)
+
+type PackageManager int
+
+func New() PackageManager {
+	// search for package-lock.json, yarn.lock, pnpm.lock, bun.lock
+	return PackageManager(Npm)
+}
+
+func (pm PackageManager) Update(packages []Package) error {
+	return errors.New("not implemented")
+}
 
 type JSONPackage struct {
 	Name    string
@@ -13,14 +33,16 @@ type JSONPackage struct {
 	Current string `json:"current"`
 }
 
-func FetchOutdatedPackages() (map[string]JSONPackage, error) {
-	timer := time.NewTimer(time.Second * 1)
-	<-timer.C
+func (pm PackageManager) GetOutdated() (map[string]JSONPackage, error) {
+	// timer := time.NewTimer(time.Second * 1)
+	// <-timer.C
+	// var err error
+
 	// output, err := exec.Command("npm", "outdated", "--json").Output()
-	// if err != nil {
-	// 	fmt.Println("🪚 err:", err)
-	// }
-	var err error
+	output, err := os.ReadFile("output.json")
+	if err != nil {
+		fmt.Println("🪚 err:", err)
+	}
 
 	var outdated map[string]JSONPackage
 	err = json.NewDecoder(strings.NewReader(string(output))).Decode(&outdated)
@@ -46,7 +68,7 @@ var output string = `
   "react-native-svg": {
     "current": "15.13.0",
     "wanted": "15.14.0",
-    "latest": "15.14.0"
+    "latest": "16.14.0"
   },
   "react-native-worklets": {
     "current": "0.5.1",

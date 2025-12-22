@@ -1,4 +1,4 @@
-package version
+package packagemanager
 
 import (
 	"errors"
@@ -7,14 +7,15 @@ import (
 	"strings"
 )
 
-// Version will break currently if version has prefix or suffix
+// NOTE: Version will break currently if version has prefix or suffix
+
 type Version struct {
-	major int
-	minor int
-	patch int
+	Major int
+	Minor int
+	Patch int
 }
 
-func New(str string) (*Version, error) {
+func NewVersion(str string) (*Version, error) {
 	versions := strings.Split(str, ".")
 
 	if len(versions) != 3 {
@@ -35,39 +36,49 @@ func New(str string) (*Version, error) {
 	}
 
 	return &Version{
-		major: major,
-		minor: minor,
-		patch: patch,
+		Major: major,
+		Minor: minor,
+		Patch: patch,
 	}, nil
 }
 
 func (v Version) String() string {
 	return fmt.Sprintf(
 		"%d.%d.%d",
-		v.major,
-		v.minor,
-		v.patch,
+		v.Major,
+		v.Minor,
+		v.Patch,
 	)
 }
 
 func (v Version) Compare(b Version) int {
-	if v.major > b.major {
+	if v.Major > b.Major {
 		return 1
-	} else if v.major < b.major {
+	} else if v.Major < b.Major {
 		return -1
 	}
 
-	if v.minor > b.minor {
+	if v.Minor > b.Minor {
 		return 1
-	} else if v.minor < b.minor {
+	} else if v.Minor < b.Minor {
 		return -1
 	}
 
-	if v.patch > b.patch {
+	if v.Patch > b.Patch {
 		return 1
-	} else if v.patch < b.patch {
+	} else if v.Patch < b.Patch {
 		return -1
 	}
 
 	return 0
+}
+
+func (v Version) Diff(b Version) Version {
+	diff := Version{
+		Major: b.Major - v.Major,
+		Minor: b.Minor - v.Minor,
+		Patch: b.Patch - v.Patch,
+	}
+
+	return diff
 }

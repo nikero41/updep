@@ -2,13 +2,13 @@ package row
 
 import (
 	"updep/pkg/config"
-	packagemodel "updep/pkg/models/package"
+	packagemanager "updep/pkg/packageManager"
 
 	"github.com/charmbracelet/lipgloss"
 )
 
 func CalculateColumnWidths(
-	packages []packagemodel.Package,
+	packages []packagemanager.Package,
 ) [config.ColumnCount]int {
 	columnWidths := [config.ColumnCount]int{}
 	for _, p := range packages {
