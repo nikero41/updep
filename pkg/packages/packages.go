@@ -1,4 +1,4 @@
-package packagemanager
+package packages
 
 import (
 	"errors"
