@@ -6,6 +6,7 @@ import (
 	"updep/pkg/components/row"
 	"updep/pkg/config"
 	packagemanager "updep/pkg/packageManager"
+	"updep/pkg/packageManager/adapters"
 
 	"github.com/charmbracelet/bubbles/help"
 	"github.com/charmbracelet/bubbles/spinner"
@@ -13,7 +14,7 @@ import (
 	"github.com/charmbracelet/lipgloss"
 )
 
-var pm = packagemanager.New()
+var pm packagemanager.PackageManager
 
 type AppModel struct {
 	loading      string
@@ -40,6 +41,8 @@ func NewAppModel() AppModel {
 }
 
 func (m AppModel) Init() tea.Cmd {
+	pm = adapters.NewNpm()
+
 	return tea.Batch(m.spinner.Tick, getOutdatedPackages)
 }
 
