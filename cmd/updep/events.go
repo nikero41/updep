@@ -1,47 +1,27 @@
 package main
 
 import (
-	"errors"
 	"fmt"
 	"time"
 
 	"updep/pkg/components/row"
-	packagemanager "updep/pkg/packageManager"
+	"updep/pkg/packages"
 
 	tea "github.com/charmbracelet/bubbletea"
 )
 
-type OutdatedPackagesCmd []packagemanager.Package
+type OutdatedPackagesCmd []packages.Package
 
 func getOutdatedPackages() tea.Msg {
-	result, err := pm.GetOutdated()
+	packages, err := pm.GetOutdated()
 	if err != nil {
 		panic(err)
-	}
-
-	packages := []packagemanager.Package{}
-	for packageName, value := range result {
-		pkg, err := packagemanager.NewPackage(
-			packageName,
-			value.Wanted,
-			value.Latest,
-			value.Current,
-		)
-		if err != nil {
-			_ = errors.New("invalid package versions")
-			// TODO: handle error
-			continue
-		}
-
-		packages = append(packages, *pkg)
 	}
 
 	return OutdatedPackagesCmd(packages)
 }
 
-type UpdateResultCmd struct {
-	success bool
-}
+type UpdateResultCmd bool
 
 func updatePackages(_ []row.Row) tea.Cmd {
 	return func() tea.Msg {
@@ -53,8 +33,8 @@ func updatePackages(_ []row.Row) tea.Cmd {
 		// 	fmt.Println("🪚 err:", err)
 		// }
 		// fmt.Println("🪚 output:", output)
-		return UpdateResultCmd{
-			success: true,
-		}
+
+		// TODO: investigate why returning tea.Quit from update Msg is not quiting
+		return UpdateResultCmd(true)
 	}
 }
