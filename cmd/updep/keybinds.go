@@ -54,10 +54,12 @@ func (m *AppModel) handleKeyPress(msg tea.KeyMsg) tea.Cmd {
 		if m.cursor > 0 {
 			m.cursor -= 1
 		}
+
 	case key.Matches(msg, keyMap.Down):
 		if m.cursor < len(m.rows)-1 {
 			m.cursor += 1
 		}
+
 	case key.Matches(msg, keyMap.Submit):
 		var pkgs []row.Row
 		for _, row := range m.rows {
@@ -68,10 +70,13 @@ func (m *AppModel) handleKeyPress(msg tea.KeyMsg) tea.Cmd {
 		}
 		m.loading = fmt.Sprintf("Updating %d packages", len(pkgs))
 		return tea.Batch(m.spinner.Tick, updatePackages(pkgs))
+
 	case key.Matches(msg, keyMap.Quit):
 		return tea.Quit
+
 	case key.Matches(msg, keyMap.ExpandHelp):
 		m.help.ShowAll = !m.help.ShowAll
 	}
+
 	return nil
 }
