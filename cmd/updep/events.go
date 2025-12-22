@@ -36,7 +36,7 @@ func getOutdatedPackages() tea.Msg {
 		packages = append(packages, *pkg)
 	}
 
-	return OutdatedPackagesMsg(packages)
+	return OutdatedPackagesCmd(packages)
 }
 
 type UpdateResultCmd struct {

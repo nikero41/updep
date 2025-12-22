@@ -44,7 +44,7 @@ func (m AppModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	var cmds []tea.Cmd
 
 	switch msg := msg.(type) {
-	case OutdatedPackagesMsg:
+	case OutdatedPackagesCmd:
 		packages := msg
 		m.columnWidths = row.CalculateColumnWidths(packages)
 		m.rows = make([]row.Row, len(packages))
