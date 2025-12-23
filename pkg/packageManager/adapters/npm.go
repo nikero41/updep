@@ -3,7 +3,6 @@ package adapters
 import (
 	"encoding/json"
 	"errors"
-	"fmt"
 	"os/exec"
 	"strings"
 
@@ -26,8 +25,10 @@ type JSONPackage struct {
 func (pm Npm) GetOutdated() ([]packages.Package, error) {
 	output, err := exec.Command("npm", "outdated", "--json").Output()
 	// output, err := os.ReadFile("output.json")
-	if err != nil {
-		fmt.Println("🪚 err:", err)
+
+	// NOTE: npm outdated returns exit status 1 if there are outdated packages
+	if err != nil && err.Error() != "exit status 1" {
+		panic(err)
 	}
 
 	var outdated map[string]JSONPackage
