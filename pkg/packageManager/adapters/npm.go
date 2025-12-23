@@ -38,6 +38,8 @@ func (pm Npm) GetOutdated() ([]packages.Package, error) {
 	}
 
 	outdatedPackages := make([]packages.Package, len(outdated))
+
+	var index int
 	for name, value := range outdated {
 		pkg, err := packages.NewPackage(
 			name,
@@ -51,7 +53,8 @@ func (pm Npm) GetOutdated() ([]packages.Package, error) {
 			continue
 		}
 
-		outdatedPackages = append(outdatedPackages, *pkg)
+		outdatedPackages[index] = *pkg
+		index++
 	}
 
 	return outdatedPackages, nil
