@@ -4,19 +4,19 @@ import (
 	"fmt"
 
 	"updep/pkg/config"
-	packagemanager "updep/pkg/packageManager"
+	packages "updep/pkg/packages"
 
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/lipgloss"
 )
 
 type Row struct {
-	Pkg          packagemanager.Package
-	Target       *packagemanager.Version
+	Pkg          packages.Package
+	Target       *packages.Version
 	ColumnWidths [config.ColumnCount]int
 }
 
-func New(pkg packagemanager.Package, columnWidths [config.ColumnCount]int) Row {
+func New(pkg packages.Package, columnWidths [config.ColumnCount]int) Row {
 	return Row{
 		Pkg:          pkg,
 		ColumnWidths: columnWidths,
@@ -75,8 +75,8 @@ func (r Row) getCellStyles() [config.ColumnCount]string {
 }
 
 func versionWithDiff(
-	v packagemanager.Version,
-	diff packagemanager.Version,
+	v packages.Version,
+	diff packages.Version,
 ) string {
 	if diff.Major > 0 {
 		return errorStyle.Render(v.String())
