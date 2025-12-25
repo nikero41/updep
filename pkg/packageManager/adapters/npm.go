@@ -41,7 +41,7 @@ func (pm Npm) GetOutdated() ([]packages.Package, error) {
 
 	var index int
 	for name, value := range outdated {
-		pkg, err := packages.NewPackage(
+		pkg, err := packages.New(
 			name,
 			value.Wanted,
 			value.Latest,

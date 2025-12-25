@@ -13,7 +13,7 @@ type Package struct {
 	Current version.Version
 }
 
-func NewPackage(
+func New(
 	name string,
 	wantedVersion string,
 	latestVersion string,
