@@ -2,13 +2,15 @@ package packages
 
 import (
 	"errors"
+
+	"updep/pkg/version"
 )
 
 type Package struct {
 	Name    string
-	Wanted  Version
-	Latest  Version
-	Current Version
+	Wanted  version.Version
+	Latest  version.Version
+	Current version.Version
 }
 
 func NewPackage(
@@ -17,15 +19,15 @@ func NewPackage(
 	latestVersion string,
 	currentVersion string,
 ) (*Package, error) {
-	wanted, err := NewVersion(wantedVersion)
+	wanted, err := version.New(wantedVersion)
 	if err != nil {
 		return nil, errors.New("invalid packagemanager")
 	}
-	latest, err := NewVersion(latestVersion)
+	latest, err := version.New(latestVersion)
 	if err != nil {
 		return nil, errors.New("invalid packagemanager")
 	}
-	current, err := NewVersion(currentVersion)
+	current, err := version.New(currentVersion)
 	if err != nil {
 		return nil, errors.New("invalid packagemanager")
 	}

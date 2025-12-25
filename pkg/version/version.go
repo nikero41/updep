@@ -1,4 +1,4 @@
-package packages
+package version
 
 import (
 	"errors"
@@ -15,7 +15,7 @@ type Version struct {
 	Patch int
 }
 
-func NewVersion(str string) (*Version, error) {
+func New(str string) (*Version, error) {
 	versions := strings.Split(str, ".")
 
 	if len(versions) != 3 {
@@ -73,12 +73,27 @@ func (v Version) Compare(b Version) int {
 	return 0
 }
 
-func (v Version) Diff(b Version) Version {
-	diff := Version{
-		Major: b.Major - v.Major,
-		Minor: b.Minor - v.Minor,
-		Patch: b.Patch - v.Patch,
-	}
+func (v Version) RenderWithDiff(b Version) string {
+	switch VersionDiffLevel(v, b) {
+	case Major:
+		return majorDiffStyle.Render(v.String())
 
-	return diff
+	case Minor:
+		return fmt.Sprintf(
+			"%d.%v",
+			v.Major,
+			minorDiffStyle.Render(fmt.Sprintf("%d.%d", v.Minor, v.Patch)),
+		)
+
+	case Patch:
+		return fmt.Sprintf(
+			"%d.%d.%v",
+			v.Major,
+			v.Minor,
+			patchDiffStyle.Render(fmt.Sprintf("%d", v.Patch)),
+		)
+
+	default:
+		return v.String()
+	}
 }
