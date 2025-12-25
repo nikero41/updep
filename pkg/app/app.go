@@ -7,8 +7,6 @@ import (
 	tea "github.com/charmbracelet/bubbletea"
 
 	packagemanager "updep/pkg/packageManager"
-
-	"github.com/charmbracelet/bubbles/help"
 )
 
 type AppScreen int
