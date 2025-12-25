@@ -1,0 +1,36 @@
+package startup
+
+import (
+	packagemanager "updep/pkg/packageManager"
+	"updep/pkg/packageManager/adapters"
+	"updep/pkg/packages"
+
+	tea "github.com/charmbracelet/bubbletea"
+)
+
+type StartUpCompletedCmd struct {
+	Packages []packages.Package
+	Pm       packagemanager.PackageManager
+}
+
+type PackageManagerFoundCmd packagemanager.PackageManager
+
+func getPackageManager() tea.Cmd {
+	return func() tea.Msg {
+		pm := adapters.NewNpm()
+		return PackageManagerFoundCmd(pm)
+	}
+}
+
+type OutdatedPackagesCmd []packages.Package
+
+func getOutdatedPackages(pm packagemanager.PackageManager) tea.Cmd {
+	return func() tea.Msg {
+		packages, err := pm.GetOutdated()
+		if err != nil {
+			panic(err)
+		}
+
+		return OutdatedPackagesCmd(packages)
+	}
+}
