@@ -11,6 +11,7 @@ type Package struct {
 	Wanted  version.Version
 	Latest  version.Version
 	Current version.Version
+	Target  *version.Version
 }
 
 func New(
@@ -37,5 +38,6 @@ func New(
 		Wanted:  *wanted,
 		Latest:  *latest,
 		Current: *current,
+		Target:  nil,
 	}, nil
 }
