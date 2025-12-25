@@ -88,9 +88,10 @@ func (m AppModel) View() string {
 
 	renderRows := make([]string, len(m.rows))
 	for i, p := range m.rows {
-		renderRows[i] = p.View()
 		if i == m.cursor {
-			renderRows[i] = row.ActiveRowStyle.Render(p.View())
+			renderRows[i] = row.ActiveRowStyle.Render("> " + p.View())
+		} else {
+			renderRows[i] = "  " + p.View()
 		}
 	}
 
@@ -121,7 +122,8 @@ func headerView(columnWidths [config.ColumnCount]int) string {
 			name,
 		)
 	}
-	return headerStyle.Render(lipgloss.JoinHorizontal(
+
+	return "  " + headerStyle.Render(lipgloss.JoinHorizontal(
 		lipgloss.Center,
 		columnNames[:]...,
 	))
