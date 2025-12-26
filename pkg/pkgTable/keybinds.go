@@ -100,7 +100,7 @@ func (t *PkgTable) handleKeyPress(msg tea.KeyMsg) tea.Cmd {
 			}
 			pkgs = append(pkgs, pkg)
 		}
-		// return updatePackages(pkgs)
+		return func() tea.Msg { return SelectPackagesMsg(pkgs) }
 
 	case key.Matches(msg, keyMap.ExpandHelp):
 		t.helpModel.ShowAll = !t.helpModel.ShowAll

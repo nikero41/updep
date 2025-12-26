@@ -40,14 +40,18 @@ func (m AppModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	var cmds []tea.Cmd
 
 	switch msg := msg.(type) {
+	case tea.KeyMsg:
+		cmds = append(cmds, m.handleKeyPress(msg))
+
 	case startup.StartUpCompletedMsg:
 		m.screen = Choice
 		m.pkgTableModel.Packages = msg.Packages
-		cmd := m.pkgTableModel.Init()
-		cmds = append(cmds, cmd)
+		cmds = append(cmds, m.pkgTableModel.Init())
 
-	case tea.KeyMsg:
-		cmds = append(cmds, m.handleKeyPress(msg))
+	case pkgtable.SelectPackagesMsg:
+		m.screen = Update
+		// cmd := m.updateModel.Init()
+		// cmds = append(cmds, cmd)
 	}
 
 	switch m.screen {
