@@ -8,7 +8,7 @@ import (
 	tea "github.com/charmbracelet/bubbletea"
 )
 
-type StartUpCompletedCmd struct {
+type StartUpCompletedMsg struct {
 	Packages []packages.Package
 	Pm       packagemanager.PackageManager
 }
@@ -22,7 +22,7 @@ func getPackageManager() tea.Cmd {
 	}
 }
 
-type OutdatedPackagesCmd []packages.Package
+type OutdatedPackagesMsg []packages.Package
 
 func getOutdatedPackages(pm packagemanager.PackageManager) tea.Cmd {
 	return func() tea.Msg {
@@ -31,6 +31,6 @@ func getOutdatedPackages(pm packagemanager.PackageManager) tea.Cmd {
 			panic(err)
 		}
 
-		return OutdatedPackagesCmd(packages)
+		return OutdatedPackagesMsg(packages)
 	}
 }

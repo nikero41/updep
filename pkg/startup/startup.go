@@ -40,9 +40,9 @@ func (s StartUp) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	case PackageManagerFoundCmd:
 		s.pm = msg
 		return s, getOutdatedPackages(msg)
-	case OutdatedPackagesCmd:
+	case OutdatedPackagesMsg:
 		return s, func() tea.Msg {
-			return StartUpCompletedCmd{
+			return StartUpCompletedMsg{
 				Packages: msg,
 				Pm:       s.pm,
 			}

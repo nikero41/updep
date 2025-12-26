@@ -40,7 +40,7 @@ func (m AppModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	var cmds []tea.Cmd
 
 	switch msg := msg.(type) {
-	case startup.StartUpCompletedCmd:
+	case startup.StartUpCompletedMsg:
 		m.screen = Choice
 		m.pkgTableModel.Packages = msg.Packages
 		cmd := m.pkgTableModel.Init()
@@ -48,9 +48,6 @@ func (m AppModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 
 	case tea.KeyMsg:
 		cmds = append(cmds, m.handleKeyPress(msg))
-
-	case UpdateResultCmd:
-		return m, tea.Quit
 	}
 
 	switch m.screen {
