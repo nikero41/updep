@@ -2,7 +2,6 @@ package startup
 
 import (
 	packagemanager "updep/pkg/packageManager"
-	"updep/pkg/packageManager/adapters"
 	"updep/pkg/packages"
 
 	tea "github.com/charmbracelet/bubbletea"
@@ -17,7 +16,11 @@ type PackageManagerFoundCmd packagemanager.PackageManager
 
 func getPackageManager() tea.Cmd {
 	return func() tea.Msg {
-		pm := adapters.NewNpm()
+		pm, err := packagemanager.GetProjectPackageManager()
+		if err != nil {
+			panic(err)
+		}
+
 		return PackageManagerFoundCmd(pm)
 	}
 }
