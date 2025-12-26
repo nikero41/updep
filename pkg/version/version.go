@@ -15,6 +15,9 @@ type Version struct {
 	Patch int
 }
 
+// New parses a semantic version string in the form "X.Y.Z" and returns a Version.
+// New accepts a dot-separated three-part numeric version (major.minor.patch).
+// It returns a Version populated with the parsed integers, or an error "invalid version" if the input does not match the required format or contains non-numeric components.
 func New(str string) (*Version, error) {
 	versions := strings.Split(str, ".")
 

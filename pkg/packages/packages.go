@@ -15,6 +15,9 @@ type Package struct {
 	Target *version.Version
 }
 
+// New creates a Package for the given name and version strings.
+// It parses the wanted, latest, and current version values and sets the corresponding fields on the Package with Target left nil.
+// An error is returned if any of the version strings cannot be parsed; the error message indicates which version failed (for example "invalid wanted version: ...").
 func New(
 	name string,
 	wantedVersion string,

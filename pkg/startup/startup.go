@@ -17,6 +17,8 @@ type StartUp struct {
 	pm        packagemanager.PackageManager
 }
 
+// New creates a StartUp model with a configured spinner and default label.
+// The spinner uses the Points glyph set and is styled with the configured theme's Mauve color; the returned StartUp's labelText is "Getting outdated packages" and pm is nil.
 func New() StartUp {
 	s := spinner.New()
 	s.Spinner = spinner.Points

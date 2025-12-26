@@ -24,6 +24,8 @@ type AppModel struct {
 	pm            packagemanager.PackageManager
 }
 
+// New creates and returns a ready-to-use AppModel with its startup and package table
+// submodels initialized, the screen set to StartUp, and no PackageManager attached.
 func New() AppModel {
 	return AppModel{
 		startUpModel:  startup.New(),

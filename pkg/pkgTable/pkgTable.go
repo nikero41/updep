@@ -15,6 +15,7 @@ type PkgTable struct {
 	Packages  []packages.Package
 }
 
+// New creates a PkgTable with an initialized help model, the cursor set to 0, and an empty Packages slice.
 func New() PkgTable {
 	return PkgTable{
 		helpModel: help.New(),
@@ -59,6 +60,10 @@ func (t PkgTable) View() string {
 	)
 }
 
+// headerView renders the table header row using the provided column widths.
+// 
+// columnWidths is an array of widths for the columns in order: Package Name, Wanted, Latest, Current.
+// The result is a styled header string, positioned with a left margin and spacing appropriate for the given widths.
 func headerView(columnWidths [config.ColumnCount]int) string {
 	return headerStyle.MarginLeft(2).Render(lipgloss.JoinHorizontal(
 		lipgloss.Center,
