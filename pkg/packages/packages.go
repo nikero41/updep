@@ -1,7 +1,7 @@
 package packages
 
 import (
-	"errors"
+	"fmt"
 
 	"updep/pkg/version"
 )
@@ -22,15 +22,15 @@ func New(
 ) (*Package, error) {
 	wanted, err := version.New(wantedVersion)
 	if err != nil {
-		return nil, errors.New("invalid packagemanager")
+		return nil, fmt.Errorf("invalid wanted version: %w", err)
 	}
 	latest, err := version.New(latestVersion)
 	if err != nil {
-		return nil, errors.New("invalid packagemanager")
+		return nil, fmt.Errorf("invalid latest version: %w", err)
 	}
 	current, err := version.New(currentVersion)
 	if err != nil {
-		return nil, errors.New("invalid packagemanager")
+		return nil, fmt.Errorf("invalid current version: %w", err)
 	}
 
 	return &Package{
