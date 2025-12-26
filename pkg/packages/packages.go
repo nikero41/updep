@@ -11,7 +11,8 @@ type Package struct {
 	Wanted  version.Version
 	Latest  version.Version
 	Current version.Version
-	Target  *version.Version
+	// Target is the version selected for upgrade/downgrade, or nil if not yet chosen
+	Target *version.Version
 }
 
 func New(
