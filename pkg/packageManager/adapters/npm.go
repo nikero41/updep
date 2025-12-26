@@ -28,7 +28,7 @@ func (pm Npm) GetOutdated() ([]packages.Package, error) {
 
 	// NOTE: npm outdated returns exit status 1 if there are outdated packages
 	if err != nil && err.Error() != "exit status 1" {
-		panic(err)
+		return nil, err
 	}
 
 	var outdated map[string]JSONPackage
@@ -48,9 +48,7 @@ func (pm Npm) GetOutdated() ([]packages.Package, error) {
 			value.Current,
 		)
 		if err != nil {
-			_ = errors.New("invalid package versions")
-			// TODO: handle error
-			continue
+			return nil, errors.New("invalid package versions")
 		}
 
 		outdatedPackages[index] = *pkg
