@@ -80,7 +80,7 @@ func (t *PkgTable) handleKeyPress(msg tea.KeyMsg) tea.Cmd {
 		t.Packages[t.cursor].Target = &t.Packages[t.cursor].Latest
 
 	case key.Matches(msg, keyMap.ToggleTarget):
-		pkg := t.Packages[t.cursor]
+		pkg := &t.Packages[t.cursor]
 		if pkg.Target != nil {
 			pkg.Target = nil
 			break
