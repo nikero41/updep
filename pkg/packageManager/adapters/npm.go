@@ -24,7 +24,6 @@ type JSONPackage struct {
 
 func (pm Npm) GetOutdated() ([]packages.Package, error) {
 	output, err := exec.Command("npm", "outdated", "--json", "--long").Output()
-	// output, err := os.ReadFile("output.json")
 
 	// NOTE: npm outdated returns exit status 1 if there are outdated packages
 	if err != nil && err.Error() != "exit status 1" {
