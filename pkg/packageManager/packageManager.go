@@ -1,6 +1,7 @@
 package packagemanager
 
 import (
+	"errors"
 	"fmt"
 	"os"
 
@@ -13,7 +14,7 @@ type PackageManager interface {
 	Update(packages []packages.Package) error
 }
 
-func GetProjectPackageManager() PackageManager {
+func GetProjectPackageManager() (PackageManager, error) {
 	dir, err := os.ReadDir(".")
 	if err != nil {
 		panic(err)
@@ -28,5 +29,13 @@ func GetProjectPackageManager() PackageManager {
 	}
 	fmt.Println("🪚 pmLockFiles:", projectPms)
 
-	return adapters.Npm{}
+	if len(projectPms) == 1 {
+		return projectPms[0], nil
+	}
+
+	if len(projectPms) == 0 {
+		return nil, errors.New("no package manager found")
+	}
+
+	return nil, errors.New("multiple package managers found")
 }
