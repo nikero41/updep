@@ -9,18 +9,12 @@ const (
 	None
 )
 
-func VersionDiffLevel(v Version, b Version) DiffLevel {
-	diff := Version{
-		Major: b.Major - v.Major,
-		Minor: b.Minor - v.Minor,
-		Patch: b.Patch - v.Patch,
-	}
-
-	if diff.Major != 0 {
+func VersionDiffLevel(a Version, b Version) DiffLevel {
+	if b.Major != a.Major {
 		return Major
-	} else if diff.Minor != 0 {
+	} else if b.Minor != a.Minor {
 		return Minor
-	} else if diff.Patch != 0 {
+	} else if b.Patch != a.Patch {
 		return Patch
 	}
 
