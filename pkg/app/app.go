@@ -14,6 +14,7 @@ type AppScreen int
 const (
 	StartUp AppScreen = iota
 	Choice
+	Update
 )
 
 type AppModel struct {
