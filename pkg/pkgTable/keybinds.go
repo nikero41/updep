@@ -55,9 +55,10 @@ func (k KeyMap) FullHelp() [][]key.Binding {
 			k.Up,
 			// TODO: add help from app
 			// k.Quit,
+			k.ToggleTarget,
 		},
-		{k.Down},
-		{k.ExpandHelp},
+		{k.Down, k.MarkWanted},
+		{k.ExpandHelp, k.MarkLatest},
 	}
 }
 
