@@ -16,7 +16,7 @@ type PackageManager interface {
 func GetProjectPackageManager() (PackageManager, error) {
 	dir, err := os.ReadDir(".")
 	if err != nil {
-		panic(err)
+		return nil, err
 	}
 
 	var projectPms []PackageManager
