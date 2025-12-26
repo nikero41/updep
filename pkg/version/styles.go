@@ -7,8 +7,7 @@ import (
 )
 
 var (
-	majorDiffStyle = lipgloss.NewStyle().Foreground(config.Theme.Red)
-	minorDiffStyle = lipgloss.NewStyle().
-			Foreground(config.Theme.Peach)
-	patchDiffStyle = lipgloss.NewStyle().Foreground(config.Theme.Green)
+	majorDiffStyle = lipgloss.NewStyle().Foreground(config.Theme.Major)
+	minorDiffStyle = lipgloss.NewStyle().Foreground(config.Theme.Minor)
+	patchDiffStyle = lipgloss.NewStyle().Foreground(config.Theme.Patch)
 )

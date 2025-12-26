@@ -20,7 +20,7 @@ type StartUp struct {
 func New() StartUp {
 	s := spinner.New()
 	s.Spinner = spinner.Points
-	s.Style = lipgloss.NewStyle().Foreground(config.Theme.Mauve)
+	s.Style = lipgloss.NewStyle().Foreground(config.Theme.Primary)
 
 	return StartUp{
 		spinner:   s,
