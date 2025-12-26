@@ -51,8 +51,6 @@ func (m AppModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 
 	case pkgtable.SelectPackagesMsg:
 		m.screen = Update
-		// cmd := m.updateModel.Init()
-		// cmds = append(cmds, cmd)
 	}
 
 	switch m.screen {
