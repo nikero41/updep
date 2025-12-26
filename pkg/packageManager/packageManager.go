@@ -2,7 +2,6 @@ package packagemanager
 
 import (
 	"errors"
-	"fmt"
 	"os"
 
 	"updep/pkg/packageManager/adapters"
@@ -27,7 +26,6 @@ func GetProjectPackageManager() (PackageManager, error) {
 			projectPms = append(projectPms, adapters.Npm{})
 		}
 	}
-	fmt.Println("🪚 pmLockFiles:", projectPms)
 
 	if len(projectPms) == 1 {
 		return projectPms[0], nil
