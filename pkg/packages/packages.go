@@ -1,33 +1,37 @@
 package packages
 
 import (
-	"errors"
+	"fmt"
+
+	"updep/pkg/version"
 )
 
 type Package struct {
 	Name    string
-	Wanted  Version
-	Latest  Version
-	Current Version
+	Wanted  version.Version
+	Latest  version.Version
+	Current version.Version
+	// Target is the version selected for upgrade/downgrade, or nil if not yet chosen
+	Target *version.Version
 }
 
-func NewPackage(
+func New(
 	name string,
 	wantedVersion string,
 	latestVersion string,
 	currentVersion string,
 ) (*Package, error) {
-	wanted, err := NewVersion(wantedVersion)
+	wanted, err := version.New(wantedVersion)
 	if err != nil {
-		return nil, errors.New("invalid packagemanager")
+		return nil, fmt.Errorf("invalid wanted version: %w", err)
 	}
-	latest, err := NewVersion(latestVersion)
+	latest, err := version.New(latestVersion)
 	if err != nil {
-		return nil, errors.New("invalid packagemanager")
+		return nil, fmt.Errorf("invalid latest version: %w", err)
 	}
-	current, err := NewVersion(currentVersion)
+	current, err := version.New(currentVersion)
 	if err != nil {
-		return nil, errors.New("invalid packagemanager")
+		return nil, fmt.Errorf("invalid current version: %w", err)
 	}
 
 	return &Package{
@@ -35,5 +39,6 @@ func NewPackage(
 		Wanted:  *wanted,
 		Latest:  *latest,
 		Current: *current,
+		Target:  nil,
 	}, nil
 }

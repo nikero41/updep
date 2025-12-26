@@ -24,11 +24,10 @@ type JSONPackage struct {
 
 func (pm Npm) GetOutdated() ([]packages.Package, error) {
 	output, err := exec.Command("npm", "outdated", "--json", "--long").Output()
-	// output, err := os.ReadFile("output.json")
 
 	// NOTE: npm outdated returns exit status 1 if there are outdated packages
 	if err != nil && err.Error() != "exit status 1" {
-		panic(err)
+		return nil, err
 	}
 
 	var outdated map[string]JSONPackage
@@ -41,16 +40,14 @@ func (pm Npm) GetOutdated() ([]packages.Package, error) {
 
 	var index int
 	for name, value := range outdated {
-		pkg, err := packages.NewPackage(
+		pkg, err := packages.New(
 			name,
 			value.Wanted,
 			value.Latest,
 			value.Current,
 		)
 		if err != nil {
-			_ = errors.New("invalid package versions")
-			// TODO: handle error
-			continue
+			return nil, errors.New("invalid package versions")
 		}
 
 		outdatedPackages[index] = *pkg
