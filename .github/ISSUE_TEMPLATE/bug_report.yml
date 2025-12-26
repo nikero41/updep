@@ -25,7 +25,7 @@ body:
         2. Select package...
         3. See error...
     validations:
-      required: true
+      required: false
 
   - type: textarea
     id: expected
@@ -34,7 +34,7 @@ body:
       description: What did you expect to happen?
       placeholder: I expected...
     validations:
-      required: true
+      required: false
 
   - type: textarea
     id: actual
@@ -55,7 +55,7 @@ body:
         - yarn
         - pnpm
         - bun
-        - Other
+        - Not package manager specific
     validations:
       required: true
 
@@ -66,7 +66,7 @@ body:
       description: Run `npm --version`, `yarn --version`, etc.
       placeholder: e.g., 10.2.3
     validations:
-      required: true
+      required: false
 
   - type: input
     id: updep-version
