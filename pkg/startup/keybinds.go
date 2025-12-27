@@ -12,7 +12,7 @@ type KeyMap struct {
 var keyMap = KeyMap{
 	Select: key.NewBinding(
 		key.WithKeys("enter"),
-		key.WithHelp("ent", "Selete"),
+		key.WithHelp("ent", "Select"),
 	),
 }
 
