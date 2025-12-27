@@ -107,10 +107,9 @@ func (t *PkgTable) handleKeyPress(msg tea.KeyMsg) tea.Cmd {
 	case key.Matches(msg, keyMap.Submit):
 		var pkgs []packages.Package
 		for _, pkg := range t.Packages {
-			if pkg.Target == nil {
-				continue
+			if pkg.Target != nil {
+				pkgs = append(pkgs, pkg)
 			}
-			pkgs = append(pkgs, pkg)
 		}
 		return func() tea.Msg { return SelectPackagesMsg(pkgs) }
 
