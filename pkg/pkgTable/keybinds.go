@@ -84,7 +84,7 @@ func (t *PkgTable) handleKeyPress(msg tea.KeyMsg) tea.Cmd {
 
 	case key.Matches(msg, keyMap.Homepage):
 		pkg := t.Packages[t.cursor]
-		log.Println("🪚 pkg:", pkg)
+		log.Println("🪚 pkg:", pkg.Homepage)
 
 	case key.Matches(msg, keyMap.MarkWanted):
 		t.Packages[t.cursor].Target = &t.Packages[t.cursor].Wanted
