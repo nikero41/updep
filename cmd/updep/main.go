@@ -22,6 +22,7 @@ func main() {
 	p := tea.NewProgram(app.New())
 	defer p.Kill()
 	if _, err := p.Run(); err != nil {
-		panic(err)
+		fmt.Println(err)
+		os.Exit(1)
 	}
 }
