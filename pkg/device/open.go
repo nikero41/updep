@@ -1,19 +1,24 @@
 package device
 
 import (
+	"errors"
 	"os/exec"
 	"runtime"
 	"strings"
 )
 
 func OpenURL(url string) error {
+	if url == "" {
+		return errors.New("URL cannot be empty")
+	}
+
 	var cmd string
 	var args []string
 
 	switch runtime.GOOS {
 	case "windows":
 		cmd = "cmd"
-		args = []string{"/c", "", "start", "url"}
+		args = []string{"/c", "", "start", url}
 
 	case "darwin":
 		cmd = "open"
