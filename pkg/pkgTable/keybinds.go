@@ -84,7 +84,9 @@ func (t *PkgTable) handleKeyPress(msg tea.KeyMsg) tea.Cmd {
 	case key.Matches(msg, keyMap.Homepage):
 		pkg := t.Packages[t.cursor]
 		err := device.OpenURL(pkg.Homepage)
-		panic(err)
+		if err != nil {
+			panic(err)
+		}
 
 	case key.Matches(msg, keyMap.MarkWanted):
 		t.Packages[t.cursor].Target = &t.Packages[t.cursor].Wanted
