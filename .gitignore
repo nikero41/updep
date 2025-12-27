@@ -33,3 +33,6 @@ go.work.sum
 
 ./updep
 npm/platforms/*/updep*
+
+# debug
+debug.log
