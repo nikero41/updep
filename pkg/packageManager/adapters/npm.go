@@ -18,10 +18,11 @@ func NewNpm() Npm {
 }
 
 type JSONPackage struct {
-	Name    string
-	Wanted  string `json:"wanted"`
-	Latest  string `json:"latest"`
-	Current string `json:"current"`
+	Name     string
+	Wanted   string `json:"wanted"`
+	Latest   string `json:"latest"`
+	Current  string `json:"current"`
+	Homepage string `json:"homepage"`
 }
 
 func (pm Npm) Name() string { return pm.name }
@@ -49,6 +50,7 @@ func (pm Npm) GetOutdated() ([]packages.Package, error) {
 			value.Wanted,
 			value.Latest,
 			value.Current,
+			value.Homepage,
 		)
 		if err != nil {
 			return nil, errors.New("invalid package versions")

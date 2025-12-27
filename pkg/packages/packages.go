@@ -12,7 +12,8 @@ type Package struct {
 	Latest  version.Version
 	Current version.Version
 	// Target is the version selected for upgrade/downgrade, or nil if not yet chosen
-	Target *version.Version
+	Target   *version.Version
+	Homepage string
 }
 
 func New(
@@ -20,6 +21,7 @@ func New(
 	wantedVersion string,
 	latestVersion string,
 	currentVersion string,
+	homepage string,
 ) (*Package, error) {
 	wanted, err := version.New(wantedVersion)
 	if err != nil {
@@ -35,10 +37,11 @@ func New(
 	}
 
 	return &Package{
-		Name:    name,
-		Wanted:  *wanted,
-		Latest:  *latest,
-		Current: *current,
-		Target:  nil,
+		Name:     name,
+		Wanted:   *wanted,
+		Latest:   *latest,
+		Current:  *current,
+		Target:   nil,
+		Homepage: homepage,
 	}, nil
 }
