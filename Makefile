@@ -31,7 +31,10 @@ npm/platforms/%/$(APP_NAME) npm/platforms/%/$(APP_NAME).exe: $(PROJECT_FILES)
 
 .PHONY: run
 run:
-	@go run ./cmd/$(APP_NAME)
+	@DEBUG=1 go run ./cmd/$(APP_NAME)
+
+dev-install:
+	@go install ./cmd/$(APP_NAME)
 
 .PHONY: install
 install: $(PROJECT_FILES)
