@@ -1,6 +1,8 @@
 package pkgtable
 
 import (
+	"log"
+
 	"updep/pkg/packages"
 
 	"github.com/charmbracelet/bubbles/key"
@@ -8,7 +10,7 @@ import (
 )
 
 type KeyMap struct {
-	Up, Down, ExpandHelp, MarkWanted, MarkLatest, ToggleTarget, Submit key.Binding
+	Up, Down, ExpandHelp, Homepage, MarkWanted, MarkLatest, ToggleTarget, Submit key.Binding
 }
 
 var keyMap = KeyMap{
@@ -23,6 +25,11 @@ var keyMap = KeyMap{
 	ExpandHelp: key.NewBinding(
 		key.WithKeys("?"),
 		key.WithHelp("?", "help"),
+	),
+
+	Homepage: key.NewBinding(
+		key.WithKeys("o"),
+		key.WithHelp("o", "view in browser"),
 	),
 
 	// Version selection
@@ -56,6 +63,7 @@ func (k KeyMap) FullHelp() [][]key.Binding {
 			// TODO: add help from app
 			// k.Quit,
 			k.ToggleTarget,
+			k.Homepage,
 		},
 		{k.Down, k.MarkWanted},
 		{k.ExpandHelp, k.MarkLatest},
@@ -73,6 +81,10 @@ func (t *PkgTable) handleKeyPress(msg tea.KeyMsg) tea.Cmd {
 		if t.cursor < len(t.Packages)-1 {
 			t.cursor += 1
 		}
+
+	case key.Matches(msg, keyMap.Homepage):
+		pkg := t.Packages[t.cursor]
+		log.Println("🪚 pkg:", pkg)
 
 	case key.Matches(msg, keyMap.MarkWanted):
 		t.Packages[t.cursor].Target = &t.Packages[t.cursor].Wanted
