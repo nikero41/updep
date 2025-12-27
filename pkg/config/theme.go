@@ -34,6 +34,7 @@ var colorsValues = map[string]lipgloss.Color{
 
 type colors struct {
 	Primary          lipgloss.Color
+	PrimaryText      lipgloss.Color
 	Major            lipgloss.Color
 	Minor            lipgloss.Color
 	Patch            lipgloss.Color
@@ -42,6 +43,7 @@ type colors struct {
 
 var Theme = colors{
 	Primary:          colorsValues["Mauve"],
+	PrimaryText:      colorsValues["Base"],
 	Major:            colorsValues["Red"],
 	Minor:            colorsValues["Peach"],
 	Patch:            colorsValues["Green"],
