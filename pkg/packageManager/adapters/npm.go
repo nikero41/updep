@@ -9,10 +9,12 @@ import (
 	"updep/pkg/packages"
 )
 
-type Npm struct{}
+type Npm struct {
+	name string
+}
 
 func NewNpm() Npm {
-	return Npm{}
+	return Npm{name: "npm"}
 }
 
 type JSONPackage struct {
@@ -21,6 +23,8 @@ type JSONPackage struct {
 	Latest  string `json:"latest"`
 	Current string `json:"current"`
 }
+
+func (pm Npm) Name() string { return pm.name }
 
 func (pm Npm) GetOutdated() ([]packages.Package, error) {
 	output, err := exec.Command("npm", "outdated", "--json", "--long").Output()

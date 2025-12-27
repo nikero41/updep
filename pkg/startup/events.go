@@ -12,16 +12,16 @@ type StartUpCompletedMsg struct {
 	Pm       packagemanager.PackageManager
 }
 
-type PackageManagerFoundCmd packagemanager.PackageManager
+type PackageManagersFoundCmd []packagemanager.PackageManager
 
 func getPackageManager() tea.Cmd {
 	return func() tea.Msg {
-		pm, err := packagemanager.GetProjectPackageManager()
+		pms, err := packagemanager.GetProjectPackageManagers()
 		if err != nil {
 			panic(err)
 		}
 
-		return PackageManagerFoundCmd(pm)
+		return PackageManagersFoundCmd(pms)
 	}
 }
 
