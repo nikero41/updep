@@ -1,8 +1,7 @@
 package pkgtable
 
 import (
-	"log"
-
+	"updep/pkg/device"
 	"updep/pkg/packages"
 
 	"github.com/charmbracelet/bubbles/key"
@@ -84,7 +83,7 @@ func (t *PkgTable) handleKeyPress(msg tea.KeyMsg) tea.Cmd {
 
 	case key.Matches(msg, keyMap.Homepage):
 		pkg := t.Packages[t.cursor]
-		log.Println("🪚 pkg:", pkg.Homepage)
+		device.OpenURL(pkg.Homepage)
 
 	case key.Matches(msg, keyMap.MarkWanted):
 		t.Packages[t.cursor].Target = &t.Packages[t.cursor].Wanted
