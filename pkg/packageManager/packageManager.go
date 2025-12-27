@@ -50,7 +50,6 @@ func GetProjectPackageManagers() ([]PackageManager, error) {
 	}
 
 	return projectPms, nil
-	// return []PackageManager{adapters.NewNpm(), adapters.NewNpm()}, nil
 }
 
 func getPackageJSONPackageManager() (PackageManager, error) {
