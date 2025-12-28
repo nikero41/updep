@@ -7,6 +7,8 @@ import (
 	"strings"
 
 	"updep/pkg/packages"
+
+	"github.com/go-playground/validator/v10"
 )
 
 type Npm struct {
@@ -17,12 +19,13 @@ func NewNpm() Npm {
 	return Npm{name: "npm"}
 }
 
+var validate = validator.New(validator.WithRequiredStructEnabled())
+
 type JSONPackage struct {
-	Name     string
-	Wanted   string `json:"wanted"`
-	Latest   string `json:"latest"`
-	Current  string `json:"current"`
-	Homepage string `json:"homepage"`
+	Wanted   string `validate:"required,semver" json:"wanted"`
+	Latest   string `validate:"required,semver" json:"latest"`
+	Current  string `validate:"required,semver" json:"current"`
+	Homepage string `validate:"omitempty,url"   json:"homepage"`
 }
 
 func (pm Npm) Name() string { return pm.name }
@@ -39,6 +42,13 @@ func (pm Npm) GetOutdated() ([]packages.Package, error) {
 	err = json.NewDecoder(strings.NewReader(string(output))).Decode(&outdated)
 	if err != nil {
 		return nil, err
+	}
+
+	for _, pkg := range outdated {
+		err = validate.Struct(pkg)
+		if err != nil {
+			return nil, err
+		}
 	}
 
 	outdatedPackages := make([]packages.Package, len(outdated))
