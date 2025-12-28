@@ -36,22 +36,27 @@ func renderRow(
 		}
 	}
 
-	return lipgloss.JoinHorizontal(lipgloss.Center,
-		nameCellStyle.Width(columnWidths[0]+config.ColumnGap).Render(pkg.Name),
-		lipgloss.PlaceHorizontal(
-			columnWidths[1]+config.ColumnGap,
-			lipgloss.Left,
+	return lipgloss.JoinHorizontal(
+		lipgloss.Center,
+		renderRowColumn(nameCellStyle.Render(pkg.Name), columnWidths[0], true),
+		renderRowColumn(
 			pkg.Wanted.RenderWithDiff(pkg.Current),
+			columnWidths[1],
+			true,
 		),
-		lipgloss.PlaceHorizontal(
-			columnWidths[2]+config.ColumnGap,
-			lipgloss.Left,
+		renderRowColumn(
 			pkg.Latest.RenderWithDiff(pkg.Current),
+			columnWidths[2],
+			true,
 		),
-		lipgloss.PlaceHorizontal(
-			columnWidths[3],
-			lipgloss.Left,
-			pkg.Current.String(),
-		),
+		renderRowColumn(pkg.Current.String(), columnWidths[3], false),
 	)
+}
+
+func renderRowColumn(label string, width int, withGap bool) string {
+	if withGap {
+		width += config.ColumnGap
+	}
+
+	return lipgloss.PlaceHorizontal(width, lipgloss.Left, label)
 }
