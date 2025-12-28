@@ -4,6 +4,7 @@ GO_FLAGS += -ldflags="-w -s"
 GO_FLAGS += -trimpath
 
 PROJECT_FILES = cmd/$(APP_NAME)/*.go pkg/*/*.go internal/*/*.go go.mod go.sum
+GENERATED_FILES = debug.log
 
 OS = darwin linux win32
 ARCH = arm64 x64
@@ -47,5 +48,5 @@ check:
 
 .PHONY: clean
 clean:
-	@rm -rf $(PLATFORM_FILES)
+	@rm -rf $(PLATFORM_FILES) $(GENERATED_FILES)
 
