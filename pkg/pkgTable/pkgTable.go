@@ -44,43 +44,48 @@ func (t PkgTable) View() string {
 	renderedRows := make([]string, len(t.Packages))
 	for i, pkg := range t.Packages {
 		row := renderRow(pkg, columnWidths)
-		if i == t.cursor {
-			renderedRows[i] = activeRowStyle.Render("> " + row)
-		} else {
-			renderedRows[i] = "  " + row
-		}
+		renderedRows[i] = cursorView(i == t.cursor) + row
 	}
 
 	return lipgloss.JoinVertical(
 		lipgloss.Left,
 		headerView(columnWidths),
 		lipgloss.JoinVertical(lipgloss.Left, renderedRows...),
-		t.helpModel.View(keyMap),
+		helpContainerStyle.Render(t.helpModel.View(keyMap)),
 	)
 }
 
 func headerView(columnWidths [config.ColumnCount]int) string {
-	return headerStyle.MarginLeft(2).Render(lipgloss.JoinHorizontal(
-		lipgloss.Center,
-		lipgloss.PlaceHorizontal(
-			columnWidths[0]+config.ColumnGap,
-			lipgloss.Left,
-			"Package Name",
-		),
-		lipgloss.PlaceHorizontal(
-			columnWidths[1]+config.ColumnGap,
-			lipgloss.Left,
-			"Wanted",
-		),
-		lipgloss.PlaceHorizontal(
-			columnWidths[2]+config.ColumnGap,
-			lipgloss.Left,
-			"Latest",
-		),
-		lipgloss.PlaceHorizontal(
-			columnWidths[3],
-			lipgloss.Left,
-			"Current",
-		),
-	))
+	return headerContainerStyle.MarginLeft(lipgloss.Width(cursorView(false))).
+		Render(lipgloss.JoinHorizontal(
+			lipgloss.Center,
+			lipgloss.PlaceHorizontal(
+				columnWidths[0]+config.ColumnGap,
+				lipgloss.Left,
+				headerStyle.Render("Package Name"),
+			),
+			lipgloss.PlaceHorizontal(
+				columnWidths[1]+config.ColumnGap,
+				lipgloss.Left,
+				headerStyle.Render("Wanted"),
+			),
+			lipgloss.PlaceHorizontal(
+				columnWidths[2]+config.ColumnGap,
+				lipgloss.Left,
+				headerStyle.Render("Latest"),
+			),
+			lipgloss.PlaceHorizontal(
+				columnWidths[3],
+				lipgloss.Left,
+				headerStyle.Render("Current"),
+			),
+		))
+}
+
+func cursorView(active bool) string {
+	c := ""
+	if active {
+		c = ">"
+	}
+	return cursorStyle.Width(2).Render(c)
 }
