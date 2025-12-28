@@ -10,22 +10,22 @@ Interactive TUI for updating JavaScript dependencies. Works with npm, yarn, pnpm
 
 ```bash
 # npm
-npx updep
+npx @nikero/updep
 
 # Yarn
-yarn dlx updep
+yarn dlx @nikero/updep
 
 # pnpm
-pnpm dlx updep
+pnpm dlx @nikero/updep
 
 # Bun
-bunx updep
+bunx @nikero/updep
 ```
 
 ### Install globally
 
 ```bash
-npm install -g updep
+npm install -g @nikero/updep
 ```
 
 Then run from any project:
@@ -40,16 +40,16 @@ Navigate to your JavaScript project directory and run:
 
 ```bash
 # npm
-npx updep
+npx @nikero/updep
 
 # Yarn
-yarn dlx updep
+yarn dlx @nikero/updep
 
 # pnpm
-pnpm dlx updep
+pnpm dlx @nikeroupdep
 
 # Bun
-bunx updep
+bunx @nikero/updep
 ```
 
 ### Keybindings

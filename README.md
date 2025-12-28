@@ -26,16 +26,9 @@ Interactive TUI for updating JavaScript dependencies. Works with npm, yarn, pnpm
 ### From Source
 
 ```bash
-git clone https://github.com/snikoletopoulos/updep.git
+git clone https://github.com/nikero41/updep.git
 cd updep
-make
 make install
-```
-
-Move the binary to your PATH:
-
-```bash
-mv updep /usr/local/bin/
 ```
 
 ## Usage
@@ -79,4 +72,4 @@ MIT License - see [LICENSE](LICENSE) for details
 
 ## Acknowledgments
 
-Built with [Bubble Tea](https://github.com/charmbracelet/bubbletea) and [Lip Gloss](https://github.com/charmbracelet/lipgloss) from Charm.
+Built with [Bubble Tea](https://github.com/charmbracelet/bubbletea) and [Lip Gloss](https://github.com/charmbracelet/lipgloss)
