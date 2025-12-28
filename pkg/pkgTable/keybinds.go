@@ -89,10 +89,16 @@ func (t *PkgTable) handleKeyPress(msg tea.KeyMsg) tea.Cmd {
 		}
 
 	case key.Matches(msg, keyMap.MarkWanted):
-		t.Packages[t.cursor].Target = &t.Packages[t.cursor].Wanted
+		pkg := &t.Packages[t.cursor]
+		if pkg.Current != pkg.Wanted {
+			pkg.Target = &pkg.Wanted
+		}
 
 	case key.Matches(msg, keyMap.MarkLatest):
-		t.Packages[t.cursor].Target = &t.Packages[t.cursor].Latest
+		pkg := &t.Packages[t.cursor]
+		if pkg.Current != pkg.Latest {
+			pkg.Target = &pkg.Latest
+		}
 
 	case key.Matches(msg, keyMap.ToggleTarget):
 		pkg := &t.Packages[t.cursor]
