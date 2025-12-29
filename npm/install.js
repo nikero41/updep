@@ -44,9 +44,8 @@ function install() {
 
     let binaryPath;
     try {
-      binaryPath = require.resolve(`${packageName}/${binName}`);
+      binaryPath = require.resolve(`${packageName}/bin/${binName}`);
     } catch (e) {
-      console.log("🪚:", JSON.stringify(e, null, 2));
       console.warn(
         `Warning: Could not find platform-specific package ${packageName}.`
       );
@@ -57,7 +56,7 @@ function install() {
     }
 
     // Copy binary to bin directory
-    const targetPath = path.join(binDir, binName);
+    const targetPath = path.join(__dirname, "bin", binName);
     fs.copyFileSync(binaryPath, targetPath);
     fs.chmodSync(targetPath, 0o755);
 
