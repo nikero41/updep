@@ -11,7 +11,7 @@ ARCH = arm64 x64
 
 PLATFORMS = $(foreach os, $(OS), $(foreach arch, $(ARCH), $(os)-$(arch)))
 PLATFORM_DIRS = $(foreach platform, $(PLATFORMS), npm/platforms/$(platform))
-PLATFORM_FILES = $(foreach platform, $(PLATFORMS), npm/platforms/$(platform)/$(call binaryname,$(platform)))
+PLATFORM_FILES = $(foreach platform, $(PLATFORMS), npm/platforms/$(platform)/bin/$(call binaryname,$(platform)))
 
 APP_NAME = updep
 binaryname = $(if $(findstring win32, $(1)),$(APP_NAME).exe,$(APP_NAME))
@@ -26,7 +26,7 @@ all: $(PLATFORM_FILES)
 format:
 	@go fmt ./...
 
-npm/platforms/%/$(APP_NAME) npm/platforms/%/$(APP_NAME).exe: $(PROJECT_FILES)
+npm/platforms/%/bin/$(APP_NAME) npm/platforms/%/bin/$(APP_NAME).exe: $(PROJECT_FILES)
 	$(info Building $*)
 	@GOOS=$(call os,$*) GOARCH=$(call arch,$*) go build $(GO_FLAGS) -o $@ ./cmd/$(APP_NAME)
 
@@ -49,4 +49,3 @@ check:
 .PHONY: clean
 clean:
 	@rm -rf $(PLATFORM_FILES) $(GENERATED_FILES)
-

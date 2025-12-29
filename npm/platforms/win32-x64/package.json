@@ -16,6 +16,6 @@
     "x64"
   ],
   "files": [
-    "updep.exe"
+    "bin/updep.exe"
   ]
 }
