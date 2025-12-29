@@ -1,6 +1,6 @@
 {
   "name": "@nikero/updep-darwin-x64",
-  "version": "0.1.1",
+  "version": "0.1.0",
   "description": "updep binary for macOS x64",
   "author": "Stavros Nikolopoulos <snikoletopoulos@hotmail.com>",
   "license": "MIT",
