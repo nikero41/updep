@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"log"
 	"os"
 
 	"updep/pkg/app"
@@ -22,7 +23,7 @@ func main() {
 	p := tea.NewProgram(app.New())
 	defer p.Kill()
 	if _, err := p.Run(); err != nil {
-		fmt.Println(err)
+		log.Println(err)
 		os.Exit(1)
 	}
 }
