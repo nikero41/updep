@@ -2,6 +2,7 @@ package packagemanager
 
 import (
 	"encoding/json"
+	"log/slog"
 	"os"
 	"strings"
 
@@ -39,6 +40,7 @@ func GetProjectPackageManagers() ([]PackageManager, error) {
 				return nil, err
 			}
 			if pm != nil {
+				slog.Info("package manager in package.json", "packageManager", pm)
 				return []PackageManager{pm}, nil
 			}
 
@@ -49,6 +51,7 @@ func GetProjectPackageManagers() ([]PackageManager, error) {
 		}
 	}
 
+	slog.Info("package managers found", "packageManagers", projectPms)
 	return projectPms, nil
 }
 

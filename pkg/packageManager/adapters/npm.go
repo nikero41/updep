@@ -2,7 +2,7 @@ package adapters
 
 import (
 	"encoding/json"
-	"errors"
+	"fmt"
 	"os/exec"
 	"strings"
 
@@ -63,7 +63,7 @@ func (pm Npm) GetOutdated() ([]packages.Package, error) {
 			value.Homepage,
 		)
 		if err != nil {
-			return nil, errors.New("invalid package versions")
+			return nil, fmt.Errorf("invalid package versions: %v %w", value, err)
 		}
 
 		outdatedPackages[index] = *pkg

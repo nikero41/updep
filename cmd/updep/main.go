@@ -1,8 +1,7 @@
 package main
 
 import (
-	"fmt"
-	"log"
+	"log/slog"
 	"os"
 
 	"updep/pkg/app"
@@ -12,9 +11,9 @@ import (
 
 func main() {
 	if len(os.Getenv("DEBUG")) > 0 {
-		f, err := tea.LogToFile("debug.log", "debug")
+		f, err := tea.LogToFile("debug.log", "")
 		if err != nil {
-			fmt.Println("fatal:", err)
+			slog.Error("error opening file for logging", "err", err)
 			os.Exit(1)
 		}
 		defer f.Close()
@@ -23,7 +22,7 @@ func main() {
 	p := tea.NewProgram(app.New())
 	defer p.Kill()
 	if _, err := p.Run(); err != nil {
-		log.Println(err)
+		slog.Error("error running program", "err", err)
 		os.Exit(1)
 	}
 }
