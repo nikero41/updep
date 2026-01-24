@@ -2,6 +2,7 @@ package packagemanager
 
 import (
 	"encoding/json"
+	"fmt"
 	"log/slog"
 	"os"
 	"strings"
@@ -16,14 +17,9 @@ type PackageManager interface {
 	Update(packages []packages.Package) error
 }
 
-var (
-	lockfilePmMapper = map[string]PackageManager{
-		"package-lock.json": adapters.NewNpm(),
-	}
-	namePmMapper = map[string]PackageManager{
-		"npm": adapters.NewNpm(),
-	}
-)
+var lockfilePmMapper = map[string]string{
+	"package-lock.json": "npm",
+}
 
 func GetProjectPackageManagers() ([]PackageManager, error) {
 	dir, err := os.ReadDir(".")
@@ -45,7 +41,11 @@ func GetProjectPackageManagers() ([]PackageManager, error) {
 			}
 
 		default:
-			if pm := lockfilePmMapper[file.Name()]; pm != nil {
+			if pmName := lockfilePmMapper[file.Name()]; pmName != "" {
+				pm, err := New(pmName)
+				if err != nil {
+					return nil, err
+				}
 				projectPms = append(projectPms, pm)
 			}
 		}
@@ -72,10 +72,21 @@ func getPackageJSONPackageManager() (PackageManager, error) {
 	}
 
 	pmName := strings.Split(packageJSON.PackageManager, "@")[0]
-
-	if pm := namePmMapper[pmName]; pm != nil {
-		return pm, nil
+	pm, err := New(pmName)
+	if err != nil {
+		return nil, err
 	}
 
-	return nil, nil
+	return pm, nil
+}
+
+func New(pmName string) (PackageManager, error) {
+	switch pmName {
+	case "npm":
+		return adapters.NewNpm(), nil
+	case "":
+		return nil, nil
+	default:
+		return nil, fmt.Errorf("invalid package manager: %s", pmName)
+	}
 }
