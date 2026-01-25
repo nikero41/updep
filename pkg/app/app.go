@@ -47,6 +47,7 @@ func (m AppModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	case startup.StartUpCompletedMsg:
 		m.screen = Choice
 		m.pkgTableModel.Packages = msg.Packages
+		m.pm = msg.Pm
 		cmds = append(cmds, m.pkgTableModel.Init())
 
 	case pkgtable.SelectPackagesMsg:
