@@ -3,6 +3,7 @@ package app
 import (
 	pkgtable "updep/pkg/pkgTable"
 	"updep/pkg/startup"
+	"updep/pkg/update"
 
 	tea "github.com/charmbracelet/bubbletea"
 
@@ -20,6 +21,7 @@ const (
 type AppModel struct {
 	startUpModel  startup.StartUp
 	pkgTableModel pkgtable.PkgTable
+	updateModel   update.Update
 	screen        AppScreen
 	pm            packagemanager.PackageManager
 }
@@ -28,6 +30,7 @@ func New() AppModel {
 	return AppModel{
 		startUpModel:  startup.New(),
 		pkgTableModel: pkgtable.New(),
+		updateModel:   update.New(),
 		screen:        StartUp,
 		pm:            nil,
 	}
@@ -52,6 +55,9 @@ func (m AppModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 
 	case pkgtable.SelectPackagesMsg:
 		m.screen = Update
+		m.updateModel.Pm = m.pm
+		m.updateModel.Packages = msg
+		cmds = append(cmds, m.updateModel.Init())
 	}
 
 	switch m.screen {
@@ -62,6 +68,10 @@ func (m AppModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	case Choice:
 		newModel, cmd := m.pkgTableModel.Update(msg)
 		m.pkgTableModel = newModel.(pkgtable.PkgTable)
+		cmds = append(cmds, cmd)
+	case Update:
+		newModel, cmd := m.updateModel.Update(msg)
+		m.updateModel = newModel.(update.Update)
 		cmds = append(cmds, cmd)
 	}
 
@@ -74,6 +84,8 @@ func (m AppModel) View() string {
 		return m.startUpModel.View()
 	case Choice:
 		return m.pkgTableModel.View()
+	case Update:
+		return m.updateModel.View()
 	default:
 		return ""
 	}
