@@ -14,7 +14,7 @@ import (
 type PackageManager interface {
 	Name() string
 	GetOutdated() ([]packages.Package, error)
-	Update(packages []packages.Package) error
+	Update(packages []packages.Package) ([]byte, error)
 }
 
 var lockfilePmMapper = map[string]string{

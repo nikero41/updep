@@ -3,6 +3,7 @@ package adapters
 import (
 	"encoding/json"
 	"fmt"
+	"log/slog"
 	"os/exec"
 	"strings"
 
@@ -73,6 +74,21 @@ func (pm Npm) GetOutdated() ([]packages.Package, error) {
 	return outdatedPackages, nil
 }
 
-func (pm Npm) Update(packages []packages.Package) error {
-	return errors.New("not implemented")
+func (pm Npm) Update(packages []packages.Package) ([]byte, error) {
+	args := make([]string, len(packages)+1)
+	args[0] = "install"
+	for i, pkg := range packages {
+		args[i+1] = pkg.Name
+		if pkg.Target.Compare(pkg.Latest) == 0 {
+			args[i+1] += "@latest"
+		}
+	}
+	slog.Info("install args:", "args", args)
+
+	output, err := exec.Command("npm", args...).CombinedOutput()
+	if err != nil {
+		return nil, err
+	}
+
+	return output, nil
 }
