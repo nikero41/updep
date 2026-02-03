@@ -5,19 +5,15 @@ import (
 	"os"
 
 	"updep/pkg/app"
+	"updep/pkg/config"
 
 	tea "github.com/charmbracelet/bubbletea"
 )
 
 func main() {
-	if len(os.Getenv("DEBUG")) > 0 {
-		f, err := tea.LogToFile("debug.log", "")
-		if err != nil {
-			slog.Error("error opening file for logging", "err", err)
-			os.Exit(1)
-		}
-		defer f.Close()
-	}
+	f := config.GetLogFile()
+	defer f.Close()
+	config.SetupLogger(f)
 
 	p := tea.NewProgram(app.New())
 	defer p.Kill()
