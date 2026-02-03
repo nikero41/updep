@@ -1,6 +1,8 @@
 package startup
 
 import (
+	"slices"
+
 	packagemanager "updep/pkg/packageManager"
 	"updep/pkg/packages"
 
@@ -29,11 +31,21 @@ type OutdatedPackagesMsg []packages.Package
 
 func getOutdatedPackages(pm packagemanager.PackageManager) tea.Cmd {
 	return func() tea.Msg {
-		packages, err := pm.GetOutdated()
+		outdatedPackages, err := pm.GetOutdated()
 		if err != nil {
 			panic(err)
 		}
 
-		return OutdatedPackagesMsg(packages)
+		slices.SortStableFunc(outdatedPackages, func(a, b packages.Package) int {
+			if a.Name < b.Name {
+				return -1
+			}
+			if a.Name > b.Name {
+				return 1
+			}
+			return 0
+		})
+
+		return OutdatedPackagesMsg(outdatedPackages)
 	}
 }
