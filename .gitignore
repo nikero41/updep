@@ -18,7 +18,10 @@ coverage.*
 profile.cov
 
 # Dependency directories (remove the comment below to include it)
-# vendor/
+vendor/
+
+# MacOS
+.DS_Store
 
 # Go workspace file
 go.work
@@ -28,11 +31,12 @@ go.work.sum
 .env
 
 # Editor/IDE
-# .idea/
-# .vscode/
+.idea/
+.vscode/
 
+# Binaries
 ./updep
-npm/platforms/*/updep*
+npm/platforms/**/updep*
 
 # debug
 debug.log
