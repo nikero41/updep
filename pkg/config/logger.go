@@ -48,7 +48,7 @@ func SetupLogger(f *os.File) {
 		Level: logLevel,
 	}
 
-	handler := slog.New(slog.NewJSONHandler(f, opts))
+	handler := slog.New(slog.NewTextHandler(f, opts))
 	slog.SetDefault(handler)
 
 	if os.Getenv("DEBUG") != "" {
