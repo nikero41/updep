@@ -9,7 +9,9 @@ import (
 )
 
 type KeyMap struct {
-	Up, Down, ExpandHelp, Homepage, MarkWanted, MarkLatest, ToggleTarget, Submit key.Binding
+	Up, Down, ExpandHelp, Homepage,
+	MarkWanted, MarkLatest, ToggleTarget, SelectAll, InvertSelection,
+	Submit key.Binding
 }
 
 var keyMap = KeyMap{
@@ -43,6 +45,14 @@ var keyMap = KeyMap{
 	ToggleTarget: key.NewBinding(
 		key.WithKeys(" "),
 		key.WithHelp("space", "toggle"),
+	),
+	SelectAll: key.NewBinding(
+		key.WithKeys("a"),
+		key.WithHelp("a", "select all"),
+	),
+	InvertSelection: key.NewBinding(
+		key.WithKeys("i"),
+		key.WithHelp("i", "invert selection"),
 	),
 
 	Submit: key.NewBinding(
@@ -97,6 +107,24 @@ func (t *DepsTable) handleKeyPress(msg tea.KeyMsg) tea.Cmd {
 		d := &t.Dependencies[t.cursor]
 		if d.Current != d.Latest {
 			d.Target = dependency.Latest
+		}
+
+	case key.Matches(msg, keyMap.ToggleTarget):
+		t.Dependencies[t.cursor].ToggleTarget()
+
+	case key.Matches(msg, keyMap.SelectAll):
+		shouldClear := true
+		for i := range t.Dependencies {
+			if t.Dependencies[i].Target == dependency.None {
+				shouldClear = false
+				t.Dependencies[i].SelectTarget()
+			}
+		}
+
+		if shouldClear {
+			for i := range t.Dependencies {
+				t.Dependencies[i].Target = dependency.None
+			}
 		}
 
 	case key.Matches(msg, keyMap.InvertSelection):

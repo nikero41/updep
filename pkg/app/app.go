@@ -1,7 +1,7 @@
 package app
 
 import (
-	pkgtable "updep/pkg/pkgTable"
+	depstable "updep/pkg/depsTable"
 	"updep/pkg/startup"
 	"updep/pkg/update"
 
@@ -19,20 +19,20 @@ const (
 )
 
 type AppModel struct {
-	startUpModel  *startup.StartUp
-	depsTableModel *pkgtable.DepsTable
-	updateModel   *update.Update
-	screen        AppScreen
-	pm            packagemanager.PackageManager
+	startUpModel   *startup.StartUp
+	depsTableModel *depstable.DepsTable
+	updateModel    *update.Update
+	screen         AppScreen
+	pm             packagemanager.PackageManager
 }
 
 func New() *AppModel {
 	return &AppModel{
-		startUpModel:  startup.New(),
-		depsTableModel: pkgtable.New(),
-		updateModel:   update.New(),
-		screen:        StartUp,
-		pm:            nil,
+		startUpModel:   startup.New(),
+		depsTableModel: depstable.New(),
+		updateModel:    update.New(),
+		screen:         StartUp,
+		pm:             nil,
 	}
 }
 
@@ -53,7 +53,7 @@ func (m AppModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		m.pm = msg.Pm
 		cmds = append(cmds, m.depsTableModel.Init())
 
-	case pkgtable.SelectDependenciesMsg:
+	case depstable.SelectDependenciesMsg:
 		m.screen = Update
 		m.updateModel.Pm = m.pm
 		m.updateModel.Dependencies = msg
@@ -68,8 +68,8 @@ func (m AppModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		cmds = append(cmds, cmd)
 	case Choice:
 		newModel, cmd := m.depsTableModel.Update(msg)
-		newPkgTableModel := newModel.(pkgtable.DepsTable)
-		m.depsTableModel = &newPkgTableModel
+		newDepsTableModel := newModel.(depstable.DepsTable)
+		m.depsTableModel = &newDepsTableModel
 		cmds = append(cmds, cmd)
 	case Update:
 		newModel, cmd := m.updateModel.Update(msg)

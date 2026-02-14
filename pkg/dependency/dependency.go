@@ -52,3 +52,24 @@ func New(
 		Homepage: homepage,
 	}, nil
 }
+
+func (dep *Dependency) ToggleTarget() {
+	if dep.Target != None {
+		dep.Target = None
+		return
+	}
+
+	dep.SelectTarget()
+}
+
+func (dep *Dependency) SelectTarget() {
+	if dep.Target != None {
+		return
+	}
+
+	if dep.Current.Compare(dep.Wanted) >= 0 {
+		dep.Target = Latest
+	} else {
+		dep.Target = Wanted
+	}
+}
