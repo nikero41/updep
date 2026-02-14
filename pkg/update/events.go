@@ -4,7 +4,7 @@ import (
 	"log"
 
 	packagemanager "updep/pkg/packageManager"
-	"updep/pkg/packages"
+	"updep/pkg/dependency"
 
 	tea "github.com/charmbracelet/bubbletea"
 )
@@ -16,7 +16,7 @@ type UpdateCompleteMsg struct {
 
 func updatePackages(
 	pm packagemanager.PackageManager,
-	packages []packages.Package,
+	packages []dependency.Dependency,
 ) tea.Cmd {
 	return func() tea.Msg {
 		// TODO: create backup of package.json and package-lock.json

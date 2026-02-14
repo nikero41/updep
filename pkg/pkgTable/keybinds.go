@@ -1,8 +1,8 @@
 package pkgtable
 
 import (
+	"updep/pkg/dependency"
 	"updep/pkg/device"
-	"updep/pkg/packages"
 
 	"github.com/charmbracelet/bubbles/key"
 	tea "github.com/charmbracelet/bubbletea"
@@ -91,32 +91,32 @@ func (t *PkgTable) handleKeyPress(msg tea.KeyMsg) tea.Cmd {
 	case key.Matches(msg, keyMap.MarkWanted):
 		pkg := &t.Packages[t.cursor]
 		if pkg.Current != pkg.Wanted {
-			pkg.Target = &pkg.Wanted
+			pkg.Target = dependency.Wanted
 		}
 
 	case key.Matches(msg, keyMap.MarkLatest):
 		pkg := &t.Packages[t.cursor]
 		if pkg.Current != pkg.Latest {
-			pkg.Target = &pkg.Latest
+			pkg.Target = dependency.Latest
 		}
 
 	case key.Matches(msg, keyMap.ToggleTarget):
 		pkg := &t.Packages[t.cursor]
-		if pkg.Target != nil {
-			pkg.Target = nil
+		if pkg.Target != dependency.None {
+			pkg.Target = dependency.None
 			break
 		}
 
 		if pkg.Current.Compare(pkg.Wanted) >= 0 {
-			pkg.Target = &pkg.Latest
+			pkg.Target = dependency.Latest
 		} else {
-			pkg.Target = &pkg.Wanted
+			pkg.Target = dependency.Wanted
 		}
 
 	case key.Matches(msg, keyMap.Submit):
-		var pkgs []packages.Package
+		var pkgs []dependency.Dependency
 		for _, pkg := range t.Packages {
-			if pkg.Target != nil {
+			if pkg.Target != dependency.None {
 				pkgs = append(pkgs, pkg)
 			}
 		}

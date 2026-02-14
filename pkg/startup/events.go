@@ -4,13 +4,13 @@ import (
 	"slices"
 
 	packagemanager "updep/pkg/packageManager"
-	"updep/pkg/packages"
+	"updep/pkg/dependency"
 
 	tea "github.com/charmbracelet/bubbletea"
 )
 
 type StartUpCompletedMsg struct {
-	Packages []packages.Package
+	Packages []dependency.Dependency
 	Pm       packagemanager.PackageManager
 }
 
@@ -27,7 +27,7 @@ func getPackageManager() tea.Cmd {
 	}
 }
 
-type OutdatedPackagesMsg []packages.Package
+type OutdatedPackagesMsg []dependency.Dependency
 
 func getOutdatedPackages(pm packagemanager.PackageManager) tea.Cmd {
 	return func() tea.Msg {
@@ -36,7 +36,7 @@ func getOutdatedPackages(pm packagemanager.PackageManager) tea.Cmd {
 			panic(err)
 		}
 
-		slices.SortStableFunc(outdatedPackages, func(a, b packages.Package) int {
+		slices.SortStableFunc(outdatedPackages, func(a, b dependency.Dependency) int {
 			if a.Name < b.Name {
 				return -1
 			}

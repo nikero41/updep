@@ -1,7 +1,7 @@
 package pkgtable
 
 import (
-	"updep/pkg/packages"
+	"updep/pkg/dependency"
 )
 
-type SelectPackagesMsg []packages.Package
+type SelectPackagesMsg []dependency.Dependency

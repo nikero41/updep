@@ -2,7 +2,7 @@ package pkgtable
 
 import (
 	"updep/pkg/config"
-	"updep/pkg/packages"
+	"updep/pkg/dependency"
 
 	"github.com/charmbracelet/bubbles/help"
 	tea "github.com/charmbracelet/bubbletea"
@@ -12,14 +12,14 @@ import (
 type PkgTable struct {
 	helpModel help.Model
 	cursor    int
-	Packages  []packages.Package
+	Packages  []dependency.Dependency
 }
 
 func New() PkgTable {
 	return PkgTable{
 		helpModel: help.New(),
 		cursor:    0,
-		Packages:  []packages.Package{},
+		Packages:  []dependency.Dependency{},
 	}
 }
 

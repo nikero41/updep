@@ -1,4 +1,4 @@
-package packages
+package dependency
 
 import (
 	"fmt"
@@ -6,13 +6,20 @@ import (
 	"updep/pkg/version"
 )
 
-type Package struct {
-	Name    string
-	Wanted  version.Version
-	Latest  version.Version
-	Current version.Version
-	// Target is the version selected for upgrade/downgrade, or nil if not yet chosen
-	Target   *version.Version
+type Target int
+
+const (
+	None Target = iota
+	Wanted
+	Latest
+)
+
+type Dependency struct {
+	Name     string
+	Wanted   version.Version
+	Latest   version.Version
+	Current  version.Version
+	Target   Target
 	Homepage string
 }
 
@@ -22,7 +29,7 @@ func New(
 	latestVersion string,
 	currentVersion string,
 	homepage string,
-) (*Package, error) {
+) (*Dependency, error) {
 	wanted, err := version.New(wantedVersion)
 	if err != nil {
 		return nil, fmt.Errorf("invalid wanted version: %w", err)
@@ -36,12 +43,12 @@ func New(
 		return nil, fmt.Errorf("invalid current version: %w", err)
 	}
 
-	return &Package{
+	return &Dependency{
 		Name:     name,
 		Wanted:   *wanted,
 		Latest:   *latest,
 		Current:  *current,
-		Target:   nil,
+		Target:   None,
 		Homepage: homepage,
 	}, nil
 }

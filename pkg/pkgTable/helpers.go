@@ -1,14 +1,17 @@
 package pkgtable
 
 import (
+	"fmt"
+
 	"updep/pkg/config"
-	"updep/pkg/packages"
+	"updep/pkg/dependency"
+	"updep/pkg/version"
 
 	"github.com/charmbracelet/lipgloss"
 )
 
 func calculateColumnWidths(
-	packages []packages.Package,
+	packages []dependency.Dependency,
 ) [config.ColumnCount]int {
 	columnWidths := [config.ColumnCount]int{}
 	for _, p := range packages {
@@ -22,17 +25,29 @@ func calculateColumnWidths(
 }
 
 func renderRow(
-	pkg packages.Package,
+	pkg dependency.Dependency,
 	columnWidths [config.ColumnCount]int,
 ) string {
 	nameCellStyle := lipgloss.NewStyle()
 
-	if pkg.Target != nil {
-		switch *pkg.Target {
-		case pkg.Wanted:
-			nameCellStyle = minorDiffStyle
-		case pkg.Latest:
+	var diffLevel version.DiffLevel
+	switch pkg.Target {
+	case dependency.None:
+		diffLevel = version.None
+	case dependency.Wanted:
+		diffLevel = version.VersionDiffLevel(pkg.Current, pkg.Wanted)
+	case dependency.Latest:
+		diffLevel = version.VersionDiffLevel(pkg.Current, pkg.Latest)
+	}
+
+	if pkg.Target != dependency.None {
+		switch diffLevel {
+		case version.Major:
 			nameCellStyle = majorDiffStyle
+		case version.Minor:
+			nameCellStyle = minorDiffStyle
+		case version.Patch:
+			nameCellStyle = patchDiffStyle
 		}
 	}
 
@@ -40,12 +55,20 @@ func renderRow(
 		lipgloss.Center,
 		renderRowColumn(nameCellStyle.Render(pkg.Name), columnWidths[0], true),
 		renderRowColumn(
-			pkg.Wanted.RenderWithDiff(pkg.Current),
+			renderWithDiff(
+				pkg.Wanted,
+				pkg.Current,
+				pkg.Target == dependency.Wanted,
+			),
 			columnWidths[1],
 			true,
 		),
 		renderRowColumn(
-			pkg.Latest.RenderWithDiff(pkg.Current),
+			renderWithDiff(
+				pkg.Latest,
+				pkg.Current,
+				pkg.Target == dependency.Latest,
+			),
 			columnWidths[2],
 			true,
 		),
@@ -59,4 +82,32 @@ func renderRowColumn(label string, width int, withGap bool) string {
 	}
 
 	return lipgloss.PlaceHorizontal(width, lipgloss.Left, label)
+}
+
+func renderWithDiff(v, b version.Version, selected bool) string {
+	baseStyle := lipgloss.NewStyle().Underline(selected)
+
+	switch version.VersionDiffLevel(v, b) {
+	case version.Major:
+		return majorDiffStyle.Underline(selected).Render(v.String())
+
+	case version.Minor:
+		return baseStyle.Render(fmt.Sprintf(
+			"%d.",
+			v.Major,
+		)) +
+			minorDiffStyle.Underline(selected).
+				Render(fmt.Sprintf("%d.%d", v.Minor, v.Patch))
+
+	case version.Patch:
+		return baseStyle.Render(fmt.Sprintf(
+			"%d.%d.",
+			v.Major,
+			v.Minor,
+		)) +
+			patchDiffStyle.Underline(selected).Render(fmt.Sprintf("%d", v.Patch))
+
+	default:
+		return v.String()
+	}
 }

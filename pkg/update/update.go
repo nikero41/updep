@@ -5,7 +5,7 @@ import (
 
 	"updep/pkg/config"
 	packagemanager "updep/pkg/packageManager"
-	"updep/pkg/packages"
+	"updep/pkg/dependency"
 
 	"github.com/charmbracelet/bubbles/spinner"
 	tea "github.com/charmbracelet/bubbletea"
@@ -15,7 +15,7 @@ import (
 type Update struct {
 	spinner   spinner.Model
 	labelText string
-	Packages  []packages.Package
+	Packages  []dependency.Dependency
 	Pm        packagemanager.PackageManager
 	output    []byte
 }

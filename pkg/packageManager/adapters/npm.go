@@ -7,7 +7,7 @@ import (
 	"os/exec"
 	"strings"
 
-	"updep/pkg/packages"
+	"updep/pkg/dependency"
 
 	"github.com/go-playground/validator/v10"
 )
@@ -31,10 +31,10 @@ type JSONPackage struct {
 
 func (pm Npm) Name() string { return pm.name }
 
-func (pm Npm) GetOutdated() ([]packages.Package, error) {
+func (pm Npm) GetOutdated() ([]dependency.Dependency, error) {
 	output, err := exec.Command("npm", "outdated", "--json", "--long").Output()
 
-	// NOTE: npm outdated returns exit status 1 if there are outdated packages
+	// npm outdated returns exit status 1 if there are outdated packages
 	if err != nil && err.Error() != "exit status 1" {
 		return nil, err
 	}
@@ -52,11 +52,11 @@ func (pm Npm) GetOutdated() ([]packages.Package, error) {
 		}
 	}
 
-	outdatedPackages := make([]packages.Package, len(outdated))
+	outdatedPackages := make([]dependency.Dependency, len(outdated))
 
 	var index int
 	for name, value := range outdated {
-		pkg, err := packages.New(
+		pkg, err := dependency.New(
 			name,
 			value.Wanted,
 			value.Latest,
@@ -74,12 +74,12 @@ func (pm Npm) GetOutdated() ([]packages.Package, error) {
 	return outdatedPackages, nil
 }
 
-func (pm Npm) Update(packages []packages.Package) ([]byte, error) {
+func (pm Npm) Update(packages []dependency.Dependency) ([]byte, error) {
 	args := make([]string, len(packages)+1)
 	args[0] = "install"
 	for i, pkg := range packages {
 		args[i+1] = pkg.Name
-		if pkg.Target.Compare(pkg.Latest) == 0 {
+		if pkg.Target == dependency.Latest {
 			args[i+1] += "@latest"
 		}
 	}
