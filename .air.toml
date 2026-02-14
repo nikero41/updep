@@ -1,11 +1,11 @@
 root = "."
 testdata_dir = "testdata"
-# tmp_dir = "tmp"
+tmp_dir = "tmp"
 
 [build]
   args_bin = []
-  bin = "/usr/bin/make dev-install"
-  cmd = "/usr/bin/true"
+  bin = "/usr/bin/true"
+  cmd = "/usr/bin/make dev-install"
   # delay = 1000
   exclude_dir = ["assets", "tmp", "vendor", "testdata"]
   exclude_file = []
