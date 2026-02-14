@@ -1,4 +1,4 @@
-package pkgtable
+package depstable
 
 import (
 	"fmt"
