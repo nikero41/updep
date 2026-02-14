@@ -59,23 +59,15 @@ func headerView(columnWidths [config.ColumnCount]int) string {
 	return headerContainerStyle.MarginLeft(lipgloss.Width(cursorView(false))).
 		Render(lipgloss.JoinHorizontal(
 			lipgloss.Center,
-			renderHeaderColumn("Package Name", columnWidths[0], true),
-			renderHeaderColumn("Wanted", columnWidths[1], true),
-			renderHeaderColumn("Latest", columnWidths[2], true),
-			renderHeaderColumn("Current", columnWidths[3], false),
+			renderRowColumn(
+				headerStyle.Render("Package Name"),
+				columnWidths[0],
+				true,
+			),
+			renderRowColumn(headerStyle.Render("Wanted"), columnWidths[1], true),
+			renderRowColumn(headerStyle.Render("Latest"), columnWidths[2], true),
+			renderRowColumn(headerStyle.Render("Current"), columnWidths[3], false),
 		))
-}
-
-func renderHeaderColumn(label string, width int, withGap bool) string {
-	if withGap {
-		width += config.ColumnGap
-	}
-
-	return lipgloss.PlaceHorizontal(
-		width,
-		lipgloss.Left,
-		headerStyle.Render(label),
-	)
 }
 
 func cursorView(active bool) string {
