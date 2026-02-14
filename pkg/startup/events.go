@@ -10,7 +10,7 @@ import (
 )
 
 type StartUpCompletedMsg struct {
-	Packages []dependency.Dependency
+	Dependencies []dependency.Dependency
 	Pm       packagemanager.PackageManager
 }
 
@@ -27,16 +27,16 @@ func getPackageManager() tea.Cmd {
 	}
 }
 
-type OutdatedPackagesMsg []dependency.Dependency
+type OutdatedDependenciesMsg []dependency.Dependency
 
-func getOutdatedPackages(pm packagemanager.PackageManager) tea.Cmd {
+func getOutdatedDependencies(pm packagemanager.PackageManager) tea.Cmd {
 	return func() tea.Msg {
-		outdatedPackages, err := pm.GetOutdated()
+		outdatedDeps, err := pm.GetOutdated()
 		if err != nil {
 			panic(err)
 		}
 
-		slices.SortStableFunc(outdatedPackages, func(a, b dependency.Dependency) int {
+		slices.SortStableFunc(outdatedDeps, func(a, b dependency.Dependency) int {
 			if a.Name < b.Name {
 				return -1
 			}
@@ -46,6 +46,6 @@ func getOutdatedPackages(pm packagemanager.PackageManager) tea.Cmd {
 			return 0
 		})
 
-		return OutdatedPackagesMsg(outdatedPackages)
+		return OutdatedDependenciesMsg(outdatedDeps)
 	}
 }

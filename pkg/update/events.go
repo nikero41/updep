@@ -14,14 +14,14 @@ type UpdateCompleteMsg struct {
 	isError bool
 }
 
-func updatePackages(
+func updateDependencies(
 	pm packagemanager.PackageManager,
-	packages []dependency.Dependency,
+	deps []dependency.Dependency,
 ) tea.Cmd {
 	return func() tea.Msg {
 		// TODO: create backup of package.json and package-lock.json
 
-		output, err := pm.Update(packages)
+		output, err := pm.Update(deps)
 		log.Println("🪚 output:", string(output))
 		if err != nil {
 			log.Println("🪚 err:", err)

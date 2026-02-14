@@ -11,36 +11,36 @@ import (
 )
 
 func calculateColumnWidths(
-	packages []dependency.Dependency,
+	deps []dependency.Dependency,
 ) [config.ColumnCount]int {
 	columnWidths := [config.ColumnCount]int{}
-	for _, p := range packages {
-		columnWidths[0] = max(columnWidths[0], lipgloss.Width(p.Name))
-		columnWidths[1] = max(columnWidths[1], lipgloss.Width(p.Wanted.String()))
-		columnWidths[2] = max(columnWidths[2], lipgloss.Width(p.Latest.String()))
-		columnWidths[3] = max(columnWidths[3], lipgloss.Width(p.Current.String()))
+	for _, d := range deps {
+		columnWidths[0] = max(columnWidths[0], lipgloss.Width(d.Name))
+		columnWidths[1] = max(columnWidths[1], lipgloss.Width(d.Wanted.String()))
+		columnWidths[2] = max(columnWidths[2], lipgloss.Width(d.Latest.String()))
+		columnWidths[3] = max(columnWidths[3], lipgloss.Width(d.Current.String()))
 	}
 
 	return columnWidths
 }
 
 func renderRow(
-	pkg dependency.Dependency,
+	d dependency.Dependency,
 	columnWidths [config.ColumnCount]int,
 ) string {
 	nameCellStyle := lipgloss.NewStyle()
 
 	var diffLevel version.DiffLevel
-	switch pkg.Target {
+	switch d.Target {
 	case dependency.None:
 		diffLevel = version.None
 	case dependency.Wanted:
-		diffLevel = version.VersionDiffLevel(pkg.Current, pkg.Wanted)
+		diffLevel = version.VersionDiffLevel(d.Current, d.Wanted)
 	case dependency.Latest:
-		diffLevel = version.VersionDiffLevel(pkg.Current, pkg.Latest)
+		diffLevel = version.VersionDiffLevel(d.Current, d.Latest)
 	}
 
-	if pkg.Target != dependency.None {
+	if d.Target != dependency.None {
 		switch diffLevel {
 		case version.Major:
 			nameCellStyle = majorDiffStyle
@@ -52,22 +52,22 @@ func renderRow(
 	}
 
 	renderedWanted := renderWithDiff(
-		pkg.Wanted,
-		pkg.Current,
-		pkg.Target == dependency.Wanted,
+		d.Wanted,
+		d.Current,
+		d.Target == dependency.Wanted,
 	)
 	renderedLatest := renderWithDiff(
-		pkg.Latest,
-		pkg.Current,
-		pkg.Target == dependency.Latest,
+		d.Latest,
+		d.Current,
+		d.Target == dependency.Latest,
 	)
 
 	return lipgloss.JoinHorizontal(
 		lipgloss.Center,
-		renderRowColumn(nameCellStyle.Render(pkg.Name), columnWidths[0], true),
+		renderRowColumn(nameCellStyle.Render(d.Name), columnWidths[0], true),
 		renderRowColumn(renderedWanted, columnWidths[1], true),
 		renderRowColumn(renderedLatest, columnWidths[2], true),
-		renderRowColumn(pkg.Current.String(), columnWidths[3], false),
+		renderRowColumn(d.Current.String(), columnWidths[3], false),
 	)
 }
 
@@ -78,10 +78,10 @@ func renderRowColumn(label string, width int, withGap bool) string {
 	return lipgloss.PlaceHorizontal(width, lipgloss.Left, label)
 }
 
-func renderWithDiff(v, b version.Version, selected bool) string {
+func renderWithDiff(v, target version.Version, selected bool) string {
 	baseStyle := lipgloss.NewStyle().Underline(selected)
 
-	switch version.VersionDiffLevel(v, b) {
+	switch version.VersionDiffLevel(v, target) {
 	case version.Major:
 		return majorDiffStyle.Underline(selected).Render(v.String())
 

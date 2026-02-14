@@ -19,17 +19,17 @@ const (
 )
 
 type AppModel struct {
-	startUpModel  startup.StartUp
-	pkgTableModel pkgtable.PkgTable
-	updateModel   update.Update
+	startUpModel  *startup.StartUp
+	depsTableModel *pkgtable.DepsTable
+	updateModel   *update.Update
 	screen        AppScreen
 	pm            packagemanager.PackageManager
 }
 
-func New() AppModel {
-	return AppModel{
+func New() *AppModel {
+	return &AppModel{
 		startUpModel:  startup.New(),
-		pkgTableModel: pkgtable.New(),
+		depsTableModel: pkgtable.New(),
 		updateModel:   update.New(),
 		screen:        StartUp,
 		pm:            nil,
@@ -49,29 +49,32 @@ func (m AppModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 
 	case startup.StartUpCompletedMsg:
 		m.screen = Choice
-		m.pkgTableModel.Packages = msg.Packages
+		m.depsTableModel.Dependencies = msg.Dependencies
 		m.pm = msg.Pm
-		cmds = append(cmds, m.pkgTableModel.Init())
+		cmds = append(cmds, m.depsTableModel.Init())
 
-	case pkgtable.SelectPackagesMsg:
+	case pkgtable.SelectDependenciesMsg:
 		m.screen = Update
 		m.updateModel.Pm = m.pm
-		m.updateModel.Packages = msg
+		m.updateModel.Dependencies = msg
 		cmds = append(cmds, m.updateModel.Init())
 	}
 
 	switch m.screen {
 	case StartUp:
 		newModel, cmd := m.startUpModel.Update(msg)
-		m.startUpModel = newModel.(startup.StartUp)
+		newStartUpModel := newModel.(startup.StartUp)
+		m.startUpModel = &newStartUpModel
 		cmds = append(cmds, cmd)
 	case Choice:
-		newModel, cmd := m.pkgTableModel.Update(msg)
-		m.pkgTableModel = newModel.(pkgtable.PkgTable)
+		newModel, cmd := m.depsTableModel.Update(msg)
+		newPkgTableModel := newModel.(pkgtable.DepsTable)
+		m.depsTableModel = &newPkgTableModel
 		cmds = append(cmds, cmd)
 	case Update:
 		newModel, cmd := m.updateModel.Update(msg)
-		m.updateModel = newModel.(update.Update)
+		newUpdateModel := newModel.(update.Update)
+		m.updateModel = &newUpdateModel
 		cmds = append(cmds, cmd)
 	}
 
@@ -83,7 +86,7 @@ func (m AppModel) View() string {
 	case StartUp:
 		return m.startUpModel.View()
 	case Choice:
-		return m.pkgTableModel.View()
+		return m.depsTableModel.View()
 	case Update:
 		return m.updateModel.View()
 	default:

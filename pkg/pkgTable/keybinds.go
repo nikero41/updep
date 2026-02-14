@@ -69,7 +69,7 @@ func (k KeyMap) FullHelp() [][]key.Binding {
 	}
 }
 
-func (t *PkgTable) handleKeyPress(msg tea.KeyMsg) tea.Cmd {
+func (t *DepsTable) handleKeyPress(msg tea.KeyMsg) tea.Cmd {
 	switch {
 	case key.Matches(msg, keyMap.Up):
 		if t.cursor > 0 {
@@ -77,50 +77,41 @@ func (t *PkgTable) handleKeyPress(msg tea.KeyMsg) tea.Cmd {
 		}
 
 	case key.Matches(msg, keyMap.Down):
-		if t.cursor < len(t.Packages)-1 {
+		if t.cursor < len(t.Dependencies)-1 {
 			t.cursor += 1
 		}
 
 	case key.Matches(msg, keyMap.Homepage):
-		pkg := t.Packages[t.cursor]
-		err := device.OpenURL(pkg.Homepage)
+		err := device.OpenURL(t.Dependencies[t.cursor].Homepage)
 		if err != nil {
 			panic(err)
 		}
 
 	case key.Matches(msg, keyMap.MarkWanted):
-		pkg := &t.Packages[t.cursor]
-		if pkg.Current != pkg.Wanted {
-			pkg.Target = dependency.Wanted
+		d := &t.Dependencies[t.cursor]
+		if d.Current != d.Wanted {
+			d.Target = dependency.Wanted
 		}
 
 	case key.Matches(msg, keyMap.MarkLatest):
-		pkg := &t.Packages[t.cursor]
-		if pkg.Current != pkg.Latest {
-			pkg.Target = dependency.Latest
+		d := &t.Dependencies[t.cursor]
+		if d.Current != d.Latest {
+			d.Target = dependency.Latest
 		}
 
-	case key.Matches(msg, keyMap.ToggleTarget):
-		pkg := &t.Packages[t.cursor]
-		if pkg.Target != dependency.None {
-			pkg.Target = dependency.None
-			break
-		}
-
-		if pkg.Current.Compare(pkg.Wanted) >= 0 {
-			pkg.Target = dependency.Latest
-		} else {
-			pkg.Target = dependency.Wanted
+	case key.Matches(msg, keyMap.InvertSelection):
+		for i := range t.Dependencies {
+			t.Dependencies[i].ToggleTarget()
 		}
 
 	case key.Matches(msg, keyMap.Submit):
-		var pkgs []dependency.Dependency
-		for _, pkg := range t.Packages {
-			if pkg.Target != dependency.None {
-				pkgs = append(pkgs, pkg)
+		var deps []dependency.Dependency
+		for _, d := range t.Dependencies {
+			if d.Target != dependency.None {
+				deps = append(deps, d)
 			}
 		}
-		return func() tea.Msg { return SelectPackagesMsg(pkgs) }
+		return func() tea.Msg { return SelectDependenciesMsg(deps) }
 
 	case key.Matches(msg, keyMap.ExpandHelp):
 		t.helpModel.ShowAll = !t.helpModel.ShowAll

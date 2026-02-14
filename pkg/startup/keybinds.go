@@ -31,7 +31,7 @@ func (s *StartUp) handleKeyPress(msg tea.KeyMsg) tea.Cmd {
 	case key.Matches(msg, keyMap.Select):
 		if i, ok := s.pmListModel.SelectedItem().(PmListItem); ok {
 			s.pm = i.pm
-			return getOutdatedPackages(s.pm)
+			return getOutdatedDependencies(s.pm)
 		}
 	}
 

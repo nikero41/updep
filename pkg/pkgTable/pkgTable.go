@@ -9,25 +9,25 @@ import (
 	"github.com/charmbracelet/lipgloss"
 )
 
-type PkgTable struct {
-	helpModel help.Model
-	cursor    int
-	Packages  []dependency.Dependency
+type DepsTable struct {
+	helpModel    help.Model
+	cursor       int
+	Dependencies []dependency.Dependency
 }
 
-func New() PkgTable {
-	return PkgTable{
-		helpModel: help.New(),
-		cursor:    0,
-		Packages:  []dependency.Dependency{},
+func New() *DepsTable {
+	return &DepsTable{
+		helpModel:    help.New(),
+		cursor:       0,
+		Dependencies: []dependency.Dependency{},
 	}
 }
 
-func (t PkgTable) Init() tea.Cmd {
+func (t DepsTable) Init() tea.Cmd {
 	return nil
 }
 
-func (t PkgTable) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
+func (t DepsTable) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	var cmds []tea.Cmd
 
 	switch msg := msg.(type) {
@@ -38,12 +38,12 @@ func (t PkgTable) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	return t, tea.Batch(cmds...)
 }
 
-func (t PkgTable) View() string {
-	columnWidths := calculateColumnWidths(t.Packages)
+func (t DepsTable) View() string {
+	columnWidths := calculateColumnWidths(t.Dependencies)
 
-	renderedRows := make([]string, len(t.Packages))
-	for i, pkg := range t.Packages {
-		row := renderRow(pkg, columnWidths)
+	renderedRows := make([]string, len(t.Dependencies))
+	for i, d := range t.Dependencies {
+		row := renderRow(d, columnWidths)
 		renderedRows[i] = cursorView(i == t.cursor) + row
 	}
 
