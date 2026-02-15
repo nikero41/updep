@@ -9,6 +9,11 @@ import (
 	"github.com/charmbracelet/lipgloss"
 )
 
+func (t *DepsTable) SetHeight(height int) {
+	t.height = height
+	t.scrollFix()
+}
+
 func (t *DepsTable) scrollFix() {
 	if t.cursor < t.offset {
 		t.offset = t.cursor
@@ -20,7 +25,7 @@ func (t *DepsTable) scrollFix() {
 	renderedRowsHeight := int(
 		math.Max(
 			math.Min(
-				float64(t.Height-headerHeight-helpHeight),
+				float64(t.height-headerHeight-helpHeight),
 				float64(len(t.dependencies)),
 			),
 			0),
@@ -43,7 +48,7 @@ func (t DepsTable) rowCount() int {
 	rowCount := int(
 		math.Max(
 			math.Min(
-				float64(t.Height-headerHeight-helpHeight),
+				float64(t.height-headerHeight-helpHeight),
 				float64(len(t.dependencies)),
 			),
 			0),

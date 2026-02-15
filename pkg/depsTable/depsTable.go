@@ -13,7 +13,7 @@ type DepsTable struct {
 	helpModel    help.Model
 	cursor       int
 	offset       int
-	Height       int
+	height       int
 	dependencies []dependency.Dependency
 	header       string
 	columnWidths [config.ColumnCount]int
@@ -24,7 +24,7 @@ func New() *DepsTable {
 		helpModel:    help.New(),
 		cursor:       0,
 		offset:       0,
-		Height:       0,
+		height:       0,
 		dependencies: []dependency.Dependency{},
 		header:       headerView([config.ColumnCount]int{}),
 		columnWidths: [config.ColumnCount]int{},
