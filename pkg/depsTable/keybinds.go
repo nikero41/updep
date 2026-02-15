@@ -111,6 +111,22 @@ func (t *DepsTable) handleKeyPress(msg tea.KeyMsg) tea.Cmd {
 		}
 		t.scrollFix()
 
+	case key.Matches(msg, keyMap.ToTop):
+		t.cursor = 0
+		t.scrollFix()
+
+	case key.Matches(msg, keyMap.ToBottom):
+		t.cursor = len(t.dependencies) - 1
+		t.scrollFix()
+
+	case key.Matches(msg, keyMap.HalfPageUp):
+		step := t.rowCount() / 2
+		t.scrollTo(t.offset - step)
+
+	case key.Matches(msg, keyMap.HalfPageDown):
+		step := t.rowCount() / 2
+		t.scrollTo(t.offset + step)
+
 	case key.Matches(msg, keyMap.Homepage):
 		err := device.OpenURL(t.dependencies[t.cursor].Homepage)
 		if err != nil {

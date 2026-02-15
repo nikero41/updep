@@ -14,6 +14,22 @@ func (t *DepsTable) SetHeight(height int) {
 	t.scrollFix()
 }
 
+func (t *DepsTable) scrollTo(to int) {
+	if to < 0 {
+		to = 0
+	} else if to >= len(t.dependencies)-t.rowCount() {
+		to = int(math.Max(float64(len(t.dependencies)-t.rowCount()), 0))
+	}
+
+	t.offset = to
+
+	if t.cursor > t.offset+t.rowCount()-1 {
+		t.cursor = t.offset + t.rowCount() - 1
+	} else if t.cursor < t.offset {
+		t.cursor = t.offset
+	}
+}
+
 func (t *DepsTable) scrollFix() {
 	if t.cursor < t.offset {
 		t.offset = t.cursor
