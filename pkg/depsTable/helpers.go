@@ -31,24 +31,16 @@ func (t *DepsTable) scrollTo(to int) {
 func (t *DepsTable) scrollFix() {
 	if t.cursor < t.offset {
 		t.offset = t.cursor
+		return
 	}
-	headerHeight := lipgloss.Height(t.header)
-	helpHeight := lipgloss.Height(
-		helpContainerStyle.Render(t.helpModel.View(keyMap)),
-	)
-	renderedRowsHeight := max(
-		min(
-			t.height-headerHeight-helpHeight,
-			len(t.dependencies),
-		),
-		0)
+	rowCount := t.rowCount()
 
-	if t.cursor > t.offset+renderedRowsHeight-1 {
-		t.offset = max(t.cursor-renderedRowsHeight+1, 0)
+	if t.cursor > t.offset+rowCount-1 {
+		t.offset = max(t.cursor-rowCount+1, 0)
 	}
 
-	if t.offset > len(t.dependencies)-renderedRowsHeight {
-		t.offset = max(len(t.dependencies)-renderedRowsHeight, 0)
+	if t.offset > len(t.dependencies)-rowCount {
+		t.offset = max(len(t.dependencies)-rowCount, 0)
 	}
 }
 
