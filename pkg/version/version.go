@@ -7,18 +7,18 @@ import (
 	"strings"
 )
 
-// NOTE: Version will break currently if version has prefix or suffix
-
 type Version struct {
-	Major int
-	Minor int
-	Patch int
+	Major  int
+	Minor  int
+	Patch  int
+	Suffix string
 }
 
 func New(str string) (*Version, error) {
 	versions := strings.Split(str, ".")
 
-	if len(versions) != 3 {
+	// A version string must have at least 3 parts, the rest are the suffix
+	if len(versions) < 3 {
 		return nil, errors.New("invalid version")
 	}
 
@@ -30,24 +30,33 @@ func New(str string) (*Version, error) {
 	if err != nil {
 		return nil, errors.New("invalid version")
 	}
-	patch, err := strconv.Atoi(versions[2])
+
+	patchStr, suffix, _ := strings.Cut(versions[2], "-")
+	patch, err := strconv.Atoi(patchStr)
 	if err != nil {
 		return nil, errors.New("invalid version")
 	}
 
 	return &Version{
-		Major: major,
-		Minor: minor,
-		Patch: patch,
+		Major:  major,
+		Minor:  minor,
+		Patch:  patch,
+		Suffix: suffix,
 	}, nil
 }
 
 func (v Version) String() string {
+	var suffix string
+	if v.Suffix != "" {
+		suffix = "-" + v.Suffix
+	}
+
 	return fmt.Sprintf(
-		"%d.%d.%d",
+		"%d.%d.%d%s",
 		v.Major,
 		v.Minor,
 		v.Patch,
+		suffix,
 	)
 }
 
@@ -71,29 +80,4 @@ func (v Version) Compare(b Version) int {
 	}
 
 	return 0
-}
-
-func (v Version) RenderWithDiff(b Version) string {
-	switch VersionDiffLevel(v, b) {
-	case Major:
-		return majorDiffStyle.Render(v.String())
-
-	case Minor:
-		return fmt.Sprintf(
-			"%d.%v",
-			v.Major,
-			minorDiffStyle.Render(fmt.Sprintf("%d.%d", v.Minor, v.Patch)),
-		)
-
-	case Patch:
-		return fmt.Sprintf(
-			"%d.%d.%v",
-			v.Major,
-			v.Minor,
-			patchDiffStyle.Render(fmt.Sprintf("%d", v.Patch)),
-		)
-
-	default:
-		return v.String()
-	}
 }

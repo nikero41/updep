@@ -19,12 +19,12 @@ type StartUp struct {
 	pmListModel PmList
 }
 
-func New() StartUp {
+func New() *StartUp {
 	s := spinner.New()
 	s.Spinner = spinner.Points
 	s.Style = lipgloss.NewStyle().Foreground(config.Theme.Primary)
 
-	return StartUp{
+	return &StartUp{
 		spinner:     s,
 		labelText:   "Getting outdated packages",
 		pm:          nil,
@@ -58,15 +58,15 @@ func (s StartUp) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			panic("not implemented")
 		case 1:
 			s.pm = msg[0]
-			cmds = append(cmds, getOutdatedPackages(s.pm))
+			cmds = append(cmds, getOutdatedDependencies(s.pm))
 		default:
 			cmds = append(cmds, s.pmListModel.SetItems(msg))
 		}
 
-	case OutdatedPackagesMsg:
+	case OutdatedDependenciesMsg:
 		return s, func() tea.Msg {
 			return StartUpCompletedMsg{
-				Packages: msg,
+				Dependencies: msg,
 				Pm:       s.pm,
 			}
 		}

@@ -1,15 +1,17 @@
-package pkgtable
+package depstable
 
 import (
+	"updep/pkg/dependency"
 	"updep/pkg/device"
-	"updep/pkg/packages"
 
 	"github.com/charmbracelet/bubbles/key"
 	tea "github.com/charmbracelet/bubbletea"
 )
 
 type KeyMap struct {
-	Up, Down, ExpandHelp, Homepage, MarkWanted, MarkLatest, ToggleTarget, Submit key.Binding
+	Up, Down, ExpandHelp, Homepage,
+	MarkWanted, MarkLatest, ToggleTarget, SelectAll, InvertSelection,
+	Submit key.Binding
 }
 
 var keyMap = KeyMap{
@@ -44,6 +46,14 @@ var keyMap = KeyMap{
 		key.WithKeys(" "),
 		key.WithHelp("space", "toggle"),
 	),
+	SelectAll: key.NewBinding(
+		key.WithKeys("a"),
+		key.WithHelp("a", "select all"),
+	),
+	InvertSelection: key.NewBinding(
+		key.WithKeys("i"),
+		key.WithHelp("i", "invert selection"),
+	),
 
 	Submit: key.NewBinding(
 		key.WithKeys("enter"),
@@ -69,7 +79,7 @@ func (k KeyMap) FullHelp() [][]key.Binding {
 	}
 }
 
-func (t *PkgTable) handleKeyPress(msg tea.KeyMsg) tea.Cmd {
+func (t *DepsTable) handleKeyPress(msg tea.KeyMsg) tea.Cmd {
 	switch {
 	case key.Matches(msg, keyMap.Up):
 		if t.cursor > 0 {
@@ -77,50 +87,59 @@ func (t *PkgTable) handleKeyPress(msg tea.KeyMsg) tea.Cmd {
 		}
 
 	case key.Matches(msg, keyMap.Down):
-		if t.cursor < len(t.Packages)-1 {
+		if t.cursor < len(t.Dependencies)-1 {
 			t.cursor += 1
 		}
 
 	case key.Matches(msg, keyMap.Homepage):
-		pkg := t.Packages[t.cursor]
-		err := device.OpenURL(pkg.Homepage)
+		err := device.OpenURL(t.Dependencies[t.cursor].Homepage)
 		if err != nil {
 			panic(err)
 		}
 
 	case key.Matches(msg, keyMap.MarkWanted):
-		pkg := &t.Packages[t.cursor]
-		if pkg.Current != pkg.Wanted {
-			pkg.Target = &pkg.Wanted
+		d := &t.Dependencies[t.cursor]
+		if d.Current != d.Wanted {
+			d.Target = dependency.Wanted
 		}
 
 	case key.Matches(msg, keyMap.MarkLatest):
-		pkg := &t.Packages[t.cursor]
-		if pkg.Current != pkg.Latest {
-			pkg.Target = &pkg.Latest
+		d := &t.Dependencies[t.cursor]
+		if d.Current != d.Latest {
+			d.Target = dependency.Latest
 		}
 
 	case key.Matches(msg, keyMap.ToggleTarget):
-		pkg := &t.Packages[t.cursor]
-		if pkg.Target != nil {
-			pkg.Target = nil
-			break
+		t.Dependencies[t.cursor].ToggleTarget()
+
+	case key.Matches(msg, keyMap.SelectAll):
+		shouldClear := true
+		for i := range t.Dependencies {
+			if t.Dependencies[i].Target == dependency.None {
+				shouldClear = false
+				t.Dependencies[i].SelectTarget()
+			}
 		}
 
-		if pkg.Current.Compare(pkg.Wanted) >= 0 {
-			pkg.Target = &pkg.Latest
-		} else {
-			pkg.Target = &pkg.Wanted
+		if shouldClear {
+			for i := range t.Dependencies {
+				t.Dependencies[i].Target = dependency.None
+			}
+		}
+
+	case key.Matches(msg, keyMap.InvertSelection):
+		for i := range t.Dependencies {
+			t.Dependencies[i].ToggleTarget()
 		}
 
 	case key.Matches(msg, keyMap.Submit):
-		var pkgs []packages.Package
-		for _, pkg := range t.Packages {
-			if pkg.Target != nil {
-				pkgs = append(pkgs, pkg)
+		var deps []dependency.Dependency
+		for _, d := range t.Dependencies {
+			if d.Target != dependency.None {
+				deps = append(deps, d)
 			}
 		}
-		return func() tea.Msg { return SelectPackagesMsg(pkgs) }
+		return func() tea.Msg { return SelectDependenciesMsg(deps) }
 
 	case key.Matches(msg, keyMap.ExpandHelp):
 		t.helpModel.ShowAll = !t.helpModel.ShowAll

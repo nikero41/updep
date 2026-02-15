@@ -7,7 +7,7 @@ import (
 	"os/exec"
 	"strings"
 
-	"updep/pkg/packages"
+	"updep/pkg/dependency"
 
 	"github.com/go-playground/validator/v10"
 )
@@ -16,8 +16,8 @@ type Npm struct {
 	name string
 }
 
-func NewNpm() Npm {
-	return Npm{name: "npm"}
+func NewNpm() *Npm {
+	return &Npm{name: "npm"}
 }
 
 var validate = validator.New(validator.WithRequiredStructEnabled())
@@ -31,10 +31,10 @@ type JSONPackage struct {
 
 func (pm Npm) Name() string { return pm.name }
 
-func (pm Npm) GetOutdated() ([]packages.Package, error) {
+func (pm Npm) GetOutdated() ([]dependency.Dependency, error) {
 	output, err := exec.Command("npm", "outdated", "--json", "--long").Output()
 
-	// NOTE: npm outdated returns exit status 1 if there are outdated packages
+	// npm outdated returns exit status 1 if there are outdated packages
 	if err != nil && err.Error() != "exit status 1" {
 		return nil, err
 	}
@@ -45,18 +45,18 @@ func (pm Npm) GetOutdated() ([]packages.Package, error) {
 		return nil, err
 	}
 
-	for _, pkg := range outdated {
-		err = validate.Struct(pkg)
+	for _, d := range outdated {
+		err = validate.Struct(d)
 		if err != nil {
 			return nil, err
 		}
 	}
 
-	outdatedPackages := make([]packages.Package, len(outdated))
+	outdatedDeps := make([]dependency.Dependency, len(outdated))
 
 	var index int
 	for name, value := range outdated {
-		pkg, err := packages.New(
+		d, err := dependency.New(
 			name,
 			value.Wanted,
 			value.Latest,
@@ -67,19 +67,19 @@ func (pm Npm) GetOutdated() ([]packages.Package, error) {
 			return nil, fmt.Errorf("invalid package versions: %v %w", value, err)
 		}
 
-		outdatedPackages[index] = *pkg
+		outdatedDeps[index] = *d
 		index++
 	}
 
-	return outdatedPackages, nil
+	return outdatedDeps, nil
 }
 
-func (pm Npm) Update(packages []packages.Package) ([]byte, error) {
-	args := make([]string, len(packages)+1)
+func (pm Npm) Update(deps []dependency.Dependency) ([]byte, error) {
+	args := make([]string, len(deps)+1)
 	args[0] = "install"
-	for i, pkg := range packages {
-		args[i+1] = pkg.Name
-		if pkg.Target.Compare(pkg.Latest) == 0 {
+	for i, d := range deps {
+		args[i+1] = d.Name
+		if d.Target == dependency.Latest {
 			args[i+1] += "@latest"
 		}
 	}

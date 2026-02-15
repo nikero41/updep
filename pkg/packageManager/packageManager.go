@@ -8,13 +8,13 @@ import (
 	"strings"
 
 	"updep/pkg/packageManager/adapters"
-	"updep/pkg/packages"
+	"updep/pkg/dependency"
 )
 
 type PackageManager interface {
 	Name() string
-	GetOutdated() ([]packages.Package, error)
-	Update(packages []packages.Package) ([]byte, error)
+	GetOutdated() ([]dependency.Dependency, error)
+	Update(deps []dependency.Dependency) ([]byte, error)
 }
 
 var lockfilePmMapper = map[string]string{
