@@ -22,7 +22,7 @@ func (t *DepsTable) scrollTo(to int) {
 	t.offset = to
 
 	if t.cursor > t.offset+t.rowCount()-1 {
-		t.cursor = max(t.offset + t.rowCount() - 1)
+		t.cursor = max(t.offset+t.rowCount()-1, 0)
 	} else if t.cursor < t.offset {
 		t.cursor = t.offset
 	}
