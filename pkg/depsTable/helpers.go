@@ -1,8 +1,6 @@
 package depstable
 
 import (
-	"math"
-
 	"updep/pkg/config"
 	"updep/pkg/dependency"
 
@@ -18,13 +16,13 @@ func (t *DepsTable) scrollTo(to int) {
 	if to < 0 {
 		to = 0
 	} else if to >= len(t.dependencies)-t.rowCount() {
-		to = int(math.Max(float64(len(t.dependencies)-t.rowCount()), 0))
+		to = max(len(t.dependencies)-t.rowCount(), 0)
 	}
 
 	t.offset = to
 
 	if t.cursor > t.offset+t.rowCount()-1 {
-		t.cursor = t.offset + t.rowCount() - 1
+		t.cursor = max(t.offset + t.rowCount() - 1)
 	} else if t.cursor < t.offset {
 		t.cursor = t.offset
 	}
@@ -38,14 +36,12 @@ func (t *DepsTable) scrollFix() {
 	helpHeight := lipgloss.Height(
 		helpContainerStyle.Render(t.helpModel.View(keyMap)),
 	)
-	renderedRowsHeight := int(
-		math.Max(
-			math.Min(
-				float64(t.height-headerHeight-helpHeight),
-				float64(len(t.dependencies)),
-			),
-			0),
-	)
+	renderedRowsHeight := max(
+		min(
+			t.height-headerHeight-helpHeight,
+			len(t.dependencies),
+		),
+		0)
 
 	if t.cursor > t.offset+renderedRowsHeight-1 {
 		t.offset = t.cursor - renderedRowsHeight + 1
@@ -61,18 +57,14 @@ func (t DepsTable) rowCount() int {
 	helpHeight := lipgloss.Height(
 		helpContainerStyle.Render(t.helpModel.View(keyMap)),
 	)
-	rowCount := int(
-		math.Max(
-			math.Min(
-				float64(t.height-headerHeight-helpHeight),
-				float64(len(t.dependencies)),
-			),
-			0),
-	)
+	rowCount := max(
+		min(
+			t.height-headerHeight-helpHeight,
+			len(t.dependencies),
+		),
+		0)
 
-	return int(
-		math.Min(float64(rowCount), float64(len(t.dependencies))),
-	)
+	return min(rowCount, len(t.dependencies))
 }
 
 func (t *DepsTable) SetDependencies(deps []dependency.Dependency) {
