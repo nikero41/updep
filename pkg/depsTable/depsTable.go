@@ -12,18 +12,19 @@ import (
 type DepsTable struct {
 	helpModel    help.Model
 	cursor       int
-	Dependencies []dependency.Dependency
 	offset       int
 	Height       int
+	dependencies []dependency.Dependency
+	columnWidths [config.ColumnCount]int
 }
 
 func New() *DepsTable {
 	return &DepsTable{
 		helpModel:    help.New(),
 		cursor:       0,
-		Dependencies: []dependency.Dependency{},
 		offset:       0,
 		Height:       0,
+		dependencies: []dependency.Dependency{},
 	}
 }
 
@@ -43,17 +44,16 @@ func (t DepsTable) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 }
 
 func (t DepsTable) View() string {
-	columnWidths := calculateColumnWidths(t.Dependencies)
-
-	renderedRows := make([]string, len(t.Dependencies))
-	for i, d := range t.Dependencies {
-		row := renderRow(d, columnWidths)
-		renderedRows[i] = cursorView(i == t.cursor) + row
+	rowCount := t.rowCount()
+	renderedRows := make([]string, rowCount)
+	for i, d := range t.dependencies[t.offset:rowCount] {
+		row := renderRow(d, t.columnWidths)
+		renderedRows[i] = cursorView(i+t.offset == t.cursor) + row
 	}
 
 	return lipgloss.JoinVertical(
 		lipgloss.Left,
-		headerView(columnWidths),
+		headerView(t.columnWidths),
 		lipgloss.JoinVertical(lipgloss.Left, renderedRows...),
 		helpContainerStyle.Render(t.helpModel.View(keyMap)),
 	)
