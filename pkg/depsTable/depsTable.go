@@ -13,6 +13,8 @@ type DepsTable struct {
 	helpModel    help.Model
 	cursor       int
 	Dependencies []dependency.Dependency
+	offset       int
+	Height       int
 }
 
 func New() *DepsTable {
@@ -20,6 +22,8 @@ func New() *DepsTable {
 		helpModel:    help.New(),
 		cursor:       0,
 		Dependencies: []dependency.Dependency{},
+		offset:       0,
+		Height:       0,
 	}
 }
 

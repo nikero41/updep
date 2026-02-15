@@ -24,6 +24,7 @@ type AppModel struct {
 	updateModel    *update.Update
 	screen         AppScreen
 	pm             packagemanager.PackageManager
+	height         int
 }
 
 func New() *AppModel {
@@ -33,6 +34,7 @@ func New() *AppModel {
 		updateModel:    update.New(),
 		screen:         StartUp,
 		pm:             nil,
+		height:         0,
 	}
 }
 
@@ -44,12 +46,16 @@ func (m AppModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	var cmds []tea.Cmd
 
 	switch msg := msg.(type) {
+	case tea.WindowSizeMsg:
+		m.height = msg.Height
+		m.depsTableModel.Height = msg.Height
+
 	case tea.KeyMsg:
 		cmds = append(cmds, m.handleKeyPress(msg))
 
 	case startup.StartUpCompletedMsg:
 		m.screen = Choice
-		m.depsTableModel.Dependencies = msg.Dependencies
+		m.depsTableModel.SetDependencies(msg.Dependencies)
 		m.pm = msg.Pm
 		cmds = append(cmds, m.depsTableModel.Init())
 
