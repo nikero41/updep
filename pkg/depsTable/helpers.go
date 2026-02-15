@@ -70,6 +70,8 @@ func (t DepsTable) rowCount() int {
 func (t *DepsTable) SetDependencies(deps []dependency.Dependency) {
 	t.dependencies = deps
 	t.setColumnWidths(calculateColumnWidths(deps))
+	t.cursor = 0
+	t.scrollFix()
 }
 
 func calculateColumnWidths(
