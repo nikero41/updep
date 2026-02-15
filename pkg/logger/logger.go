@@ -40,6 +40,15 @@ func New() (*LoggerConfig, error) {
 		tint.NewHandler(f, &tint.Options{
 			Level:      level,
 			TimeFormat: time.DateTime,
+			ReplaceAttr: func(groups []string, attr slog.Attr) slog.Attr {
+				if attr.Key == slog.LevelKey {
+					level := attr.Value.Any().(slog.Level)
+					if level == slog.LevelDebug {
+						return tint.Attr(117, attr)
+					}
+				}
+				return attr
+			},
 		}),
 	)
 	slog.SetDefault(logger)
