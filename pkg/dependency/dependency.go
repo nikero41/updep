@@ -73,3 +73,14 @@ func (d *Dependency) SelectTarget() {
 		d.Target = Wanted
 	}
 }
+
+func (d *Dependency) DiffLevel() version.DiffLevel {
+	switch d.Target {
+	case Wanted:
+		return version.VersionDiffLevel(d.Current, d.Wanted)
+	case Latest:
+		return version.VersionDiffLevel(d.Current, d.Latest)
+	default:
+		return version.None
+	}
+}
