@@ -17,6 +17,7 @@ type Version struct {
 func New(str string) (*Version, error) {
 	versions := strings.Split(str, ".")
 
+	// A version string must have at least 3 parts, the rest are the suffix
 	if len(versions) < 3 {
 		return nil, errors.New("invalid version")
 	}
