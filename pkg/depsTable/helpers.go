@@ -44,11 +44,11 @@ func (t *DepsTable) scrollFix() {
 		0)
 
 	if t.cursor > t.offset+renderedRowsHeight-1 {
-		t.offset = t.cursor - renderedRowsHeight + 1
+		t.offset = max(t.cursor-renderedRowsHeight+1, 0)
 	}
 
 	if t.offset > len(t.dependencies)-renderedRowsHeight {
-		t.offset = len(t.dependencies) - renderedRowsHeight
+		t.offset = max(len(t.dependencies)-renderedRowsHeight, 0)
 	}
 }
 
