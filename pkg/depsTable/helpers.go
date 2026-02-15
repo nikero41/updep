@@ -91,7 +91,7 @@ func renderWithDiff(v, target version.Version, selected bool) string {
 			v.Major,
 		)) +
 			minorDiffStyle.Underline(selected).
-				Render(fmt.Sprintf("%d.%d", v.Minor, v.Patch))
+				Render(fmt.Sprintf("%d.%d%s", v.Minor, v.Patch, v.Suffix))
 
 	case version.Patch:
 		return baseStyle.Render(fmt.Sprintf(
@@ -99,7 +99,7 @@ func renderWithDiff(v, target version.Version, selected bool) string {
 			v.Major,
 			v.Minor,
 		)) +
-			patchDiffStyle.Underline(selected).Render(fmt.Sprintf("%d", v.Patch))
+			patchDiffStyle.Underline(selected).Render(fmt.Sprintf("%d%s", v.Patch, v.Suffix))
 
 	default:
 		return v.String()
