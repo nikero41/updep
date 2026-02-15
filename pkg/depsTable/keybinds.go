@@ -9,7 +9,8 @@ import (
 )
 
 type KeyMap struct {
-	Up, Down, ExpandHelp, Homepage,
+	Up, Down, ToTop, ToBottom, HalfPageUp, HalfPageDown,
+	ExpandHelp, Homepage,
 	MarkWanted, MarkLatest, ToggleTarget, SelectAll, InvertSelection,
 	Submit key.Binding
 }
@@ -23,6 +24,23 @@ var keyMap = KeyMap{
 		key.WithKeys("j", "down"),
 		key.WithHelp("↓/j", "down"),
 	),
+	ToTop: key.NewBinding(
+		key.WithKeys("g", tea.KeyHome.String()), // TODO: make it gg
+		key.WithHelp("gg", "top"),
+	),
+	ToBottom: key.NewBinding(
+		key.WithKeys("G", tea.KeyEnd.String()),
+		key.WithHelp("bottom", "bottom"),
+	),
+	HalfPageUp: key.NewBinding(
+		key.WithKeys(tea.KeyCtrlU.String()),
+		key.WithHelp("^u", "scroll up"),
+	),
+	HalfPageDown: key.NewBinding(
+		key.WithKeys(tea.KeyCtrlD.String()),
+		key.WithHelp("^d", "scroll down"),
+	),
+
 	ExpandHelp: key.NewBinding(
 		key.WithKeys("?"),
 		key.WithHelp("?", "help"),
