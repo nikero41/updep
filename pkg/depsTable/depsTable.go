@@ -12,14 +12,22 @@ import (
 type DepsTable struct {
 	helpModel    help.Model
 	cursor       int
-	Dependencies []dependency.Dependency
+	offset       int
+	height       int
+	dependencies []dependency.Dependency
+	header       string
+	columnWidths [config.ColumnCount]int
 }
 
 func New() *DepsTable {
 	return &DepsTable{
 		helpModel:    help.New(),
 		cursor:       0,
-		Dependencies: []dependency.Dependency{},
+		offset:       0,
+		height:       0,
+		dependencies: []dependency.Dependency{},
+		header:       headerView([config.ColumnCount]int{}),
+		columnWidths: [config.ColumnCount]int{},
 	}
 }
 
@@ -39,18 +47,17 @@ func (t DepsTable) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 }
 
 func (t DepsTable) View() string {
-	columnWidths := calculateColumnWidths(t.Dependencies)
-
-	renderedRows := make([]string, len(t.Dependencies))
-	for i, d := range t.Dependencies {
-		row := renderRow(d, columnWidths)
-		renderedRows[i] = cursorView(i == t.cursor) + row
+	rowCount := t.rowCount()
+	rows := make([]string, rowCount)
+	for i := range rows {
+		row := renderRow(t.dependencies[t.offset+i], t.columnWidths)
+		rows[i] = cursorView(i+t.offset == t.cursor) + row
 	}
 
 	return lipgloss.JoinVertical(
 		lipgloss.Left,
-		headerView(columnWidths),
-		lipgloss.JoinVertical(lipgloss.Left, renderedRows...),
+		t.header,
+		lipgloss.JoinVertical(lipgloss.Left, rows...),
 		helpContainerStyle.Render(t.helpModel.View(keyMap)),
 	)
 }

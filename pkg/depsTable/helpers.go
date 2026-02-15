@@ -1,14 +1,68 @@
 package depstable
 
 import (
-	"fmt"
+	"math"
 
 	"updep/pkg/config"
 	"updep/pkg/dependency"
-	"updep/pkg/version"
 
 	"github.com/charmbracelet/lipgloss"
 )
+
+func (t *DepsTable) SetHeight(height int) {
+	t.height = height
+	t.scrollFix()
+}
+
+func (t *DepsTable) scrollFix() {
+	if t.cursor < t.offset {
+		t.offset = t.cursor
+	}
+	headerHeight := lipgloss.Height(headerView([config.ColumnCount]int{}))
+	helpHeight := lipgloss.Height(
+		helpContainerStyle.Render(t.helpModel.View(keyMap)),
+	)
+	renderedRowsHeight := int(
+		math.Max(
+			math.Min(
+				float64(t.height-headerHeight-helpHeight),
+				float64(len(t.dependencies)),
+			),
+			0),
+	)
+
+	if t.cursor > t.offset+renderedRowsHeight-1 {
+		t.offset = t.cursor - renderedRowsHeight + 1
+	}
+
+	if t.offset > len(t.dependencies)-renderedRowsHeight {
+		t.offset = len(t.dependencies) - renderedRowsHeight
+	}
+}
+
+func (t DepsTable) rowCount() int {
+	headerHeight := lipgloss.Height(t.header)
+	helpHeight := lipgloss.Height(
+		helpContainerStyle.Render(t.helpModel.View(keyMap)),
+	)
+	rowCount := int(
+		math.Max(
+			math.Min(
+				float64(t.height-headerHeight-helpHeight),
+				float64(len(t.dependencies)),
+			),
+			0),
+	)
+
+	return int(
+		math.Min(float64(rowCount), float64(len(t.dependencies))),
+	)
+}
+
+func (t *DepsTable) SetDependencies(deps []dependency.Dependency) {
+	t.dependencies = deps
+	t.setColumnWidths(calculateColumnWidths(deps))
+}
 
 func calculateColumnWidths(
 	deps []dependency.Dependency,
@@ -24,84 +78,7 @@ func calculateColumnWidths(
 	return columnWidths
 }
 
-func renderRow(
-	d dependency.Dependency,
-	columnWidths [config.ColumnCount]int,
-) string {
-	nameCellStyle := lipgloss.NewStyle()
-
-	var diffLevel version.DiffLevel
-	switch d.Target {
-	case dependency.None:
-		diffLevel = version.None
-	case dependency.Wanted:
-		diffLevel = version.VersionDiffLevel(d.Current, d.Wanted)
-	case dependency.Latest:
-		diffLevel = version.VersionDiffLevel(d.Current, d.Latest)
-	}
-
-	if d.Target != dependency.None {
-		switch diffLevel {
-		case version.Major:
-			nameCellStyle = majorDiffStyle
-		case version.Minor:
-			nameCellStyle = minorDiffStyle
-		case version.Patch:
-			nameCellStyle = patchDiffStyle
-		}
-	}
-
-	renderedWanted := renderWithDiff(
-		d.Wanted,
-		d.Current,
-		d.Target == dependency.Wanted,
-	)
-	renderedLatest := renderWithDiff(
-		d.Latest,
-		d.Current,
-		d.Target == dependency.Latest,
-	)
-
-	return lipgloss.JoinHorizontal(
-		lipgloss.Center,
-		renderRowColumn(nameCellStyle.Render(d.Name), columnWidths[0], true),
-		renderRowColumn(renderedWanted, columnWidths[1], true),
-		renderRowColumn(renderedLatest, columnWidths[2], true),
-		renderRowColumn(d.Current.String(), columnWidths[3], false),
-	)
-}
-
-func renderRowColumn(label string, width int, withGap bool) string {
-	if withGap {
-		width += config.ColumnGap
-	}
-	return lipgloss.PlaceHorizontal(width, lipgloss.Left, label)
-}
-
-func renderWithDiff(v, target version.Version, selected bool) string {
-	baseStyle := lipgloss.NewStyle().Underline(selected)
-
-	switch version.VersionDiffLevel(v, target) {
-	case version.Major:
-		return majorDiffStyle.Underline(selected).Render(v.String())
-
-	case version.Minor:
-		return baseStyle.Render(fmt.Sprintf(
-			"%d.",
-			v.Major,
-		)) +
-			minorDiffStyle.Underline(selected).
-				Render(fmt.Sprintf("%d.%d%s", v.Minor, v.Patch, v.Suffix))
-
-	case version.Patch:
-		return baseStyle.Render(fmt.Sprintf(
-			"%d.%d.",
-			v.Major,
-			v.Minor,
-		)) +
-			patchDiffStyle.Underline(selected).Render(fmt.Sprintf("%d%s", v.Patch, v.Suffix))
-
-	default:
-		return v.String()
-	}
+func (t *DepsTable) setColumnWidths(widths [config.ColumnCount]int) {
+	t.columnWidths = widths
+	t.header = headerView(t.columnWidths)
 }
