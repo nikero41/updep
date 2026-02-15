@@ -2,10 +2,12 @@ package update
 
 import (
 	"fmt"
+	"strings"
 
 	"updep/pkg/config"
-	packagemanager "updep/pkg/packageManager"
 	"updep/pkg/dependency"
+	packagemanager "updep/pkg/packageManager"
+	"updep/pkg/version"
 
 	"github.com/charmbracelet/bubbles/spinner"
 	tea "github.com/charmbracelet/bubbletea"
@@ -13,11 +15,12 @@ import (
 )
 
 type Update struct {
-	spinner   spinner.Model
-	labelText string
-	Dependencies  []dependency.Dependency
-	Pm        packagemanager.PackageManager
-	output    []byte
+	spinner      spinner.Model
+	labelText    string
+	Dependencies []dependency.Dependency
+	Pm           packagemanager.PackageManager
+	output       []byte
+	isDone       bool
 }
 
 func New() *Update {
@@ -27,7 +30,8 @@ func New() *Update {
 
 	return &Update{
 		spinner:   s,
-		labelText: "Getting outdated packages",
+		labelText: "Updating packages",
+		isDone:    false,
 	}
 }
 
@@ -52,12 +56,29 @@ func (u Update) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 }
 
 func (u Update) View() string {
-	if u.output != nil {
-		return fmt.Sprintf(
-			"%s\n\n✓ Updated 3 packages: lodash, react, typescript",
-			u.output,
-		)
+	if !u.isDone {
+		return fmt.Sprintf("%v %s", u.spinner.View(), u.labelText)
 	}
 
-	return fmt.Sprintf("%v %s", u.spinner.View(), u.labelText)
+	var depNames []string
+	for _, d := range u.Dependencies {
+		var depStyle lipgloss.Style
+
+		switch d.DiffLevel() {
+		case version.Major:
+			depStyle = majorDiffStyle
+		case version.Minor:
+			depStyle = minorDiffStyle
+		case version.Patch:
+			depStyle = patchDiffStyle
+		}
+		depNames = append(depNames, depStyle.Render(d.Name))
+	}
+
+	return fmt.Sprintf(
+		"\n\n%v Updated %d packages: %v",
+		checkMarkStyle.Render("✓"),
+		len(u.Dependencies),
+		strings.Join(depNames, ", "),
+	)
 }

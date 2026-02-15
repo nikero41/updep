@@ -39,6 +39,7 @@ type colors struct {
 	Minor            lipgloss.Color
 	Patch            lipgloss.Color
 	ActiveBackground lipgloss.Color
+	Success          lipgloss.Color
 }
 
 var Theme = colors{
@@ -48,4 +49,5 @@ var Theme = colors{
 	Minor:            colorsValues["Peach"],
 	Patch:            colorsValues["Green"],
 	ActiveBackground: colorsValues["Surface1"],
+	Success:          colorsValues["Green"],
 }
