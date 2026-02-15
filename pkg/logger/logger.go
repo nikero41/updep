@@ -5,6 +5,7 @@ import (
 	"log/slog"
 	"os"
 	"path"
+	"time"
 
 	"github.com/lmittmann/tint"
 )
@@ -36,7 +37,19 @@ func New() (*LoggerConfig, error) {
 	}
 
 	logger := slog.New(
-		tint.NewHandler(f, &tint.Options{Level: level}),
+		tint.NewHandler(f, &tint.Options{
+			Level:      level,
+			TimeFormat: time.DateTime,
+			ReplaceAttr: func(groups []string, attr slog.Attr) slog.Attr {
+				if attr.Key == slog.LevelKey {
+					level := attr.Value.Any().(slog.Level)
+					if level == slog.LevelDebug {
+						return tint.Attr(117, attr)
+					}
+				}
+				return attr
+			},
+		}),
 	)
 	slog.SetDefault(logger)
 	slog.Debug("logger initialized", "path", filePath)

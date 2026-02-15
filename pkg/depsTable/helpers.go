@@ -1,8 +1,6 @@
 package depstable
 
 import (
-	"math"
-
 	"updep/pkg/config"
 	"updep/pkg/dependency"
 
@@ -14,29 +12,35 @@ func (t *DepsTable) SetHeight(height int) {
 	t.scrollFix()
 }
 
+func (t *DepsTable) scrollTo(to int) {
+	if to < 0 {
+		to = 0
+	} else if to >= len(t.dependencies)-t.rowCount() {
+		to = max(len(t.dependencies)-t.rowCount(), 0)
+	}
+
+	t.offset = to
+
+	if t.cursor > t.offset+t.rowCount()-1 {
+		t.cursor = max(t.offset+t.rowCount()-1, 0)
+	} else if t.cursor < t.offset {
+		t.cursor = t.offset
+	}
+}
+
 func (t *DepsTable) scrollFix() {
 	if t.cursor < t.offset {
 		t.offset = t.cursor
+		return
 	}
-	headerHeight := lipgloss.Height(headerView([config.ColumnCount]int{}))
-	helpHeight := lipgloss.Height(
-		helpContainerStyle.Render(t.helpModel.View(keyMap)),
-	)
-	renderedRowsHeight := int(
-		math.Max(
-			math.Min(
-				float64(t.height-headerHeight-helpHeight),
-				float64(len(t.dependencies)),
-			),
-			0),
-	)
+	rowCount := t.rowCount()
 
-	if t.cursor > t.offset+renderedRowsHeight-1 {
-		t.offset = t.cursor - renderedRowsHeight + 1
+	if t.cursor > t.offset+rowCount-1 {
+		t.offset = max(t.cursor-rowCount+1, 0)
 	}
 
-	if t.offset > len(t.dependencies)-renderedRowsHeight {
-		t.offset = len(t.dependencies) - renderedRowsHeight
+	if t.offset > len(t.dependencies)-rowCount {
+		t.offset = max(len(t.dependencies)-rowCount, 0)
 	}
 }
 
@@ -45,23 +49,17 @@ func (t DepsTable) rowCount() int {
 	helpHeight := lipgloss.Height(
 		helpContainerStyle.Render(t.helpModel.View(keyMap)),
 	)
-	rowCount := int(
-		math.Max(
-			math.Min(
-				float64(t.height-headerHeight-helpHeight),
-				float64(len(t.dependencies)),
-			),
-			0),
-	)
 
-	return int(
-		math.Min(float64(rowCount), float64(len(t.dependencies))),
-	)
+	return max(
+		min(t.height-headerHeight-helpHeight, len(t.dependencies)),
+		0)
 }
 
 func (t *DepsTable) SetDependencies(deps []dependency.Dependency) {
 	t.dependencies = deps
 	t.setColumnWidths(calculateColumnWidths(deps))
+	t.cursor = 0
+	t.scrollFix()
 }
 
 func calculateColumnWidths(

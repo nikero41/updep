@@ -9,7 +9,8 @@ import (
 )
 
 type KeyMap struct {
-	Up, Down, ExpandHelp, Homepage,
+	Up, Down, ToTop, ToBottom, HalfPageUp, HalfPageDown,
+	ExpandHelp, Homepage,
 	MarkWanted, MarkLatest, ToggleTarget, SelectAll, InvertSelection,
 	Submit key.Binding
 }
@@ -23,6 +24,23 @@ var keyMap = KeyMap{
 		key.WithKeys("j", "down"),
 		key.WithHelp("↓/j", "down"),
 	),
+	ToTop: key.NewBinding(
+		key.WithKeys("g", tea.KeyHome.String()), // TODO: make it gg
+		key.WithHelp("g", "top"),
+	),
+	ToBottom: key.NewBinding(
+		key.WithKeys("G", tea.KeyEnd.String()),
+		key.WithHelp("G", "bottom"),
+	),
+	HalfPageUp: key.NewBinding(
+		key.WithKeys(tea.KeyCtrlU.String()),
+		key.WithHelp("^u", "scroll up"),
+	),
+	HalfPageDown: key.NewBinding(
+		key.WithKeys(tea.KeyCtrlD.String()),
+		key.WithHelp("^d", "scroll down"),
+	),
+
 	ExpandHelp: key.NewBinding(
 		key.WithKeys("?"),
 		key.WithHelp("?", "help"),
@@ -92,6 +110,22 @@ func (t *DepsTable) handleKeyPress(msg tea.KeyMsg) tea.Cmd {
 			t.cursor += 1
 		}
 		t.scrollFix()
+
+	case key.Matches(msg, keyMap.ToTop):
+		t.cursor = 0
+		t.scrollFix()
+
+	case key.Matches(msg, keyMap.ToBottom):
+		t.cursor = len(t.dependencies) - 1
+		t.scrollFix()
+
+	case key.Matches(msg, keyMap.HalfPageUp):
+		step := t.rowCount() / 2
+		t.scrollTo(t.offset - step)
+
+	case key.Matches(msg, keyMap.HalfPageDown):
+		step := t.rowCount() / 2
+		t.scrollTo(t.offset + step)
 
 	case key.Matches(msg, keyMap.Homepage):
 		err := device.OpenURL(t.dependencies[t.cursor].Homepage)
