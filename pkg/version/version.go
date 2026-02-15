@@ -30,16 +30,10 @@ func New(str string) (*Version, error) {
 		return nil, errors.New("invalid version")
 	}
 
-	patchAndSuffix := strings.Split(versions[2], "-")
-
-	patch, err := strconv.Atoi(patchAndSuffix[0])
+	patchStr, suffix, _ := strings.Cut(versions[2], "-")
+	patch, err := strconv.Atoi(patchStr)
 	if err != nil {
 		return nil, errors.New("invalid version")
-	}
-
-	var suffix string
-	if len(patchAndSuffix) > 1 {
-		suffix = patchAndSuffix[1]
 	}
 
 	return &Version{
