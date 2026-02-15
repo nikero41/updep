@@ -32,7 +32,7 @@ func (t *DepsTable) scrollFix() {
 	if t.cursor < t.offset {
 		t.offset = t.cursor
 	}
-	headerHeight := lipgloss.Height(headerView([config.ColumnCount]int{}))
+	headerHeight := lipgloss.Height(t.header)
 	helpHeight := lipgloss.Height(
 		helpContainerStyle.Render(t.helpModel.View(keyMap)),
 	)
