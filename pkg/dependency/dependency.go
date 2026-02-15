@@ -53,23 +53,23 @@ func New(
 	}, nil
 }
 
-func (dep *Dependency) ToggleTarget() {
-	if dep.Target != None {
-		dep.Target = None
+func (d *Dependency) ToggleTarget() {
+	if d.Target != None {
+		d.Target = None
 		return
 	}
 
-	dep.SelectTarget()
+	d.SelectTarget()
 }
 
-func (dep *Dependency) SelectTarget() {
-	if dep.Target != None {
+func (d *Dependency) SelectTarget() {
+	if d.Target != None {
 		return
 	}
 
-	if dep.Current.Compare(dep.Wanted) >= 0 {
-		dep.Target = Latest
+	if d.Current.Compare(d.Wanted) >= 0 {
+		d.Target = Latest
 	} else {
-		dep.Target = Wanted
+		d.Target = Wanted
 	}
 }
