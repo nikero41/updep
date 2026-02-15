@@ -26,11 +26,11 @@ var keyMap = KeyMap{
 	),
 	ToTop: key.NewBinding(
 		key.WithKeys("g", tea.KeyHome.String()), // TODO: make it gg
-		key.WithHelp("gg", "top"),
+		key.WithHelp("g", "top"),
 	),
 	ToBottom: key.NewBinding(
 		key.WithKeys("G", tea.KeyEnd.String()),
-		key.WithHelp("bottom", "bottom"),
+		key.WithHelp("G", "bottom"),
 	),
 	HalfPageUp: key.NewBinding(
 		key.WithKeys(tea.KeyCtrlU.String()),
