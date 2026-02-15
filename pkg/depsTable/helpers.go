@@ -57,14 +57,10 @@ func (t DepsTable) rowCount() int {
 	helpHeight := lipgloss.Height(
 		helpContainerStyle.Render(t.helpModel.View(keyMap)),
 	)
-	rowCount := max(
-		min(
-			t.height-headerHeight-helpHeight,
-			len(t.dependencies),
-		),
-		0)
 
-	return min(rowCount, len(t.dependencies))
+	return max(
+		min(t.height-headerHeight-helpHeight, len(t.dependencies)),
+		0)
 }
 
 func (t *DepsTable) SetDependencies(deps []dependency.Dependency) {
