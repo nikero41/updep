@@ -85,56 +85,58 @@ func (t *DepsTable) handleKeyPress(msg tea.KeyMsg) tea.Cmd {
 		if t.cursor > 0 {
 			t.cursor -= 1
 		}
+		t.scrollFix()
 
 	case key.Matches(msg, keyMap.Down):
-		if t.cursor < len(t.Dependencies)-1 {
+		if t.cursor < len(t.dependencies)-1 {
 			t.cursor += 1
 		}
+		t.scrollFix()
 
 	case key.Matches(msg, keyMap.Homepage):
-		err := device.OpenURL(t.Dependencies[t.cursor].Homepage)
+		err := device.OpenURL(t.dependencies[t.cursor].Homepage)
 		if err != nil {
 			panic(err)
 		}
 
 	case key.Matches(msg, keyMap.MarkWanted):
-		d := &t.Dependencies[t.cursor]
+		d := &t.dependencies[t.cursor]
 		if d.Current != d.Wanted {
 			d.Target = dependency.Wanted
 		}
 
 	case key.Matches(msg, keyMap.MarkLatest):
-		d := &t.Dependencies[t.cursor]
+		d := &t.dependencies[t.cursor]
 		if d.Current != d.Latest {
 			d.Target = dependency.Latest
 		}
 
 	case key.Matches(msg, keyMap.ToggleTarget):
-		t.Dependencies[t.cursor].ToggleTarget()
+		t.dependencies[t.cursor].ToggleTarget()
 
 	case key.Matches(msg, keyMap.SelectAll):
 		shouldClear := true
-		for i := range t.Dependencies {
-			if t.Dependencies[i].Target == dependency.None {
+		for i := range t.dependencies {
+			if t.dependencies[i].Target == dependency.None {
 				shouldClear = false
-				t.Dependencies[i].SelectTarget()
+				t.dependencies[i].SelectTarget()
 			}
 		}
 
 		if shouldClear {
-			for i := range t.Dependencies {
-				t.Dependencies[i].Target = dependency.None
+			for i := range t.dependencies {
+				t.dependencies[i].Target = dependency.None
 			}
 		}
 
 	case key.Matches(msg, keyMap.InvertSelection):
-		for i := range t.Dependencies {
-			t.Dependencies[i].ToggleTarget()
+		for i := range t.dependencies {
+			t.dependencies[i].ToggleTarget()
 		}
 
 	case key.Matches(msg, keyMap.Submit):
 		var deps []dependency.Dependency
-		for _, d := range t.Dependencies {
+		for _, d := range t.dependencies {
 			if d.Target != dependency.None {
 				deps = append(deps, d)
 			}
@@ -143,6 +145,7 @@ func (t *DepsTable) handleKeyPress(msg tea.KeyMsg) tea.Cmd {
 
 	case key.Matches(msg, keyMap.ExpandHelp):
 		t.helpModel.ShowAll = !t.helpModel.ShowAll
+		t.scrollFix()
 	}
 
 	return nil

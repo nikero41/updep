@@ -9,6 +9,32 @@ import (
 	"github.com/charmbracelet/lipgloss"
 )
 
+func (t *DepsTable) scrollFix() {
+	if t.cursor < t.offset {
+		t.offset = t.cursor
+	}
+	headerHeight := lipgloss.Height(headerView([config.ColumnCount]int{}))
+	helpHeight := lipgloss.Height(
+		helpContainerStyle.Render(t.helpModel.View(keyMap)),
+	)
+	renderedRowsHeight := int(
+		math.Max(
+			math.Min(
+				float64(t.Height-headerHeight-helpHeight),
+				float64(len(t.dependencies)),
+			),
+			0),
+	)
+
+	if t.cursor > t.offset+renderedRowsHeight-1 {
+		t.offset = t.cursor - renderedRowsHeight + 1
+	}
+
+	if t.offset > len(t.dependencies)-renderedRowsHeight {
+		t.offset = len(t.dependencies) - renderedRowsHeight
+	}
+}
+
 func (t DepsTable) rowCount() int {
 	headerHeight := lipgloss.Height(headerView(t.columnWidths))
 	helpHeight := lipgloss.Height(
