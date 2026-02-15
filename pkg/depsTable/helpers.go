@@ -1,11 +1,32 @@
 package depstable
 
 import (
+	"math"
+
 	"updep/pkg/config"
 	"updep/pkg/dependency"
 
 	"github.com/charmbracelet/lipgloss"
 )
+
+func (t DepsTable) rowCount() int {
+	headerHeight := lipgloss.Height(headerView(t.columnWidths))
+	helpHeight := lipgloss.Height(
+		helpContainerStyle.Render(t.helpModel.View(keyMap)),
+	)
+	rowCount := int(
+		math.Max(
+			math.Min(
+				float64(t.Height-headerHeight-helpHeight),
+				float64(len(t.dependencies)),
+			),
+			0),
+	)
+
+	return int(
+		math.Min(float64(rowCount), float64(len(t.dependencies))),
+	)
+}
 
 func (t *DepsTable) SetDependencies(deps []dependency.Dependency) {
 	t.dependencies = deps
