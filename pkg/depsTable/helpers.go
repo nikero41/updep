@@ -36,7 +36,7 @@ func (t *DepsTable) scrollFix() {
 }
 
 func (t DepsTable) rowCount() int {
-	headerHeight := lipgloss.Height(headerView(t.columnWidths))
+	headerHeight := lipgloss.Height(t.header)
 	helpHeight := lipgloss.Height(
 		helpContainerStyle.Render(t.helpModel.View(keyMap)),
 	)
@@ -56,7 +56,7 @@ func (t DepsTable) rowCount() int {
 
 func (t *DepsTable) SetDependencies(deps []dependency.Dependency) {
 	t.dependencies = deps
-	t.columnWidths = calculateColumnWidths(deps)
+	t.setColumnWidths(calculateColumnWidths(deps))
 }
 
 func calculateColumnWidths(
@@ -71,4 +71,9 @@ func calculateColumnWidths(
 	}
 
 	return columnWidths
+}
+
+func (t *DepsTable) setColumnWidths(widths [config.ColumnCount]int) {
+	t.columnWidths = widths
+	t.header = headerView(t.columnWidths)
 }

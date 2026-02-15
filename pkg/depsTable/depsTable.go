@@ -15,6 +15,7 @@ type DepsTable struct {
 	offset       int
 	Height       int
 	dependencies []dependency.Dependency
+	header       string
 	columnWidths [config.ColumnCount]int
 }
 
@@ -25,6 +26,8 @@ func New() *DepsTable {
 		offset:       0,
 		Height:       0,
 		dependencies: []dependency.Dependency{},
+		header:       headerView([config.ColumnCount]int{}),
+		columnWidths: [config.ColumnCount]int{},
 	}
 }
 
@@ -53,7 +56,7 @@ func (t DepsTable) View() string {
 
 	return lipgloss.JoinVertical(
 		lipgloss.Left,
-		headerView(t.columnWidths),
+		t.header,
 		lipgloss.JoinVertical(lipgloss.Left, renderedRows...),
 		helpContainerStyle.Render(t.helpModel.View(keyMap)),
 	)
