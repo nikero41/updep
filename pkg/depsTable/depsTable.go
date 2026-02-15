@@ -48,16 +48,16 @@ func (t DepsTable) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 
 func (t DepsTable) View() string {
 	rowCount := t.rowCount()
-	renderedRows := make([]string, rowCount)
-	for i, d := range t.dependencies[t.offset:rowCount] {
-		row := renderRow(d, t.columnWidths)
-		renderedRows[i] = cursorView(i+t.offset == t.cursor) + row
+	rows := make([]string, rowCount)
+	for i := range rows {
+		row := renderRow(t.dependencies[t.offset+i], t.columnWidths)
+		rows[i] = cursorView(i+t.offset == t.cursor) + row
 	}
 
 	return lipgloss.JoinVertical(
 		lipgloss.Left,
 		t.header,
-		lipgloss.JoinVertical(lipgloss.Left, renderedRows...),
+		lipgloss.JoinVertical(lipgloss.Left, rows...),
 		helpContainerStyle.Render(t.helpModel.View(keyMap)),
 	)
 }
