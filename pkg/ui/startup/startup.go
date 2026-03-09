@@ -12,6 +12,8 @@ import (
 	"github.com/charmbracelet/lipgloss"
 )
 
+// TODO: handle not installed dependencies
+
 type StartUp struct {
 	spinner     spinner.Model
 	labelText   string
@@ -67,7 +69,7 @@ func (s StartUp) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		return s, func() tea.Msg {
 			return StartUpCompletedMsg{
 				Dependencies: msg,
-				Pm:       s.pm,
+				Pm:           s.pm,
 			}
 		}
 	}

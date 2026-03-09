@@ -1,9 +1,9 @@
 package app
 
 import (
-	depstable "updep/pkg/depsTable"
-	"updep/pkg/startup"
-	"updep/pkg/update"
+	depstable "updep/pkg/ui/depsTable"
+	"updep/pkg/ui/startup"
+	"updep/pkg/ui/update"
 
 	tea "github.com/charmbracelet/bubbletea"
 
