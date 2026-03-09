@@ -92,3 +92,7 @@ func (pm Npm) Update(deps []dependency.Dependency) ([]byte, error) {
 
 	return output, nil
 }
+
+func (npm Npm) String() string {
+	return npm.Name()
+}
