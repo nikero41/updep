@@ -5,7 +5,6 @@ import (
 
 	"updep/pkg/config"
 	packagemanager "updep/pkg/packageManager"
-	"updep/pkg/packageManager/adapters"
 
 	"github.com/charmbracelet/bubbles/spinner"
 	tea "github.com/charmbracelet/bubbletea"
@@ -49,15 +48,9 @@ func (s StartUp) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		cmds = append(cmds, s.handleKeyPress(msg))
 
 	case PackageManagersFoundCmd:
-		// TODO: temp for dev
-		if len(msg) == 0 {
-			msg = append(msg, adapters.NewNpm())
-		}
-
 		switch len(msg) {
 		case 0:
-			// TODO: Show error screen
-			panic("not implemented")
+			cmds = append(cmds, tea.Sequence(tea.Println("All packages are up-to-date"), tea.Quit))
 		case 1:
 			s.pm = msg[0]
 			cmds = append(cmds, getOutdatedDependencies(s.pm))
