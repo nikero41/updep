@@ -3,8 +3,8 @@ package update
 import (
 	"log"
 
-	packagemanager "updep/pkg/packageManager"
 	"updep/pkg/dependency"
+	packagemanager "updep/pkg/packageManager"
 
 	tea "github.com/charmbracelet/bubbletea"
 )

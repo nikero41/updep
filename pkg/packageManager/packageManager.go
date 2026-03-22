@@ -7,8 +7,8 @@ import (
 	"os"
 	"strings"
 
-	"updep/pkg/packageManager/adapters"
 	"updep/pkg/dependency"
+	"updep/pkg/packageManager/adapters"
 )
 
 type PackageManager interface {
