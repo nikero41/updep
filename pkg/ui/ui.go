@@ -6,4 +6,3 @@ type Component interface {
 	Update(msg tea.Msg) tea.Cmd
 	Render() string
 }
-
