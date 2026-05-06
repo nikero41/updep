@@ -9,9 +9,9 @@ import (
 	packagemanager "updep/pkg/packageManager"
 	"updep/pkg/version"
 
-	"github.com/charmbracelet/bubbles/spinner"
-	tea "github.com/charmbracelet/bubbletea"
-	"github.com/charmbracelet/lipgloss"
+	"charm.land/bubbles/v2/spinner"
+	tea "charm.land/bubbletea/v2"
+	"charm.land/lipgloss/v2"
 )
 
 type Update struct {
@@ -39,7 +39,7 @@ func (u Update) Init() tea.Cmd {
 	return tea.Batch(u.spinner.Tick, updateDependencies(u.Pm, u.Dependencies))
 }
 
-func (u Update) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
+func (u *Update) Update(msg tea.Msg) tea.Cmd {
 	var cmds []tea.Cmd
 
 	switch msg := msg.(type) {
@@ -52,10 +52,10 @@ func (u Update) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	u.spinner, cmd = u.spinner.Update(msg)
 	cmds = append(cmds, cmd)
 
-	return u, tea.Batch(cmds...)
+	return tea.Batch(cmds...)
 }
 
-func (u Update) View() string {
+func (u Update) Render() string {
 	if !u.isDone {
 		return fmt.Sprintf("%v %s", u.spinner.View(), u.labelText)
 	}

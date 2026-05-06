@@ -4,9 +4,9 @@ import (
 	"updep/pkg/config"
 	"updep/pkg/dependency"
 
-	"github.com/charmbracelet/bubbles/help"
-	tea "github.com/charmbracelet/bubbletea"
-	"github.com/charmbracelet/lipgloss"
+	"charm.land/bubbles/v2/help"
+	tea "charm.land/bubbletea/v2"
+	"charm.land/lipgloss/v2"
 )
 
 type DepsTable struct {
@@ -35,18 +35,18 @@ func (t DepsTable) Init() tea.Cmd {
 	return nil
 }
 
-func (t DepsTable) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
+func (t *DepsTable) Update(msg tea.Msg) tea.Cmd {
 	var cmds []tea.Cmd
 
 	switch msg := msg.(type) {
-	case tea.KeyMsg:
+	case tea.KeyPressMsg:
 		cmds = append(cmds, t.handleKeyPress(msg))
 	}
 
-	return t, tea.Batch(cmds...)
+	return tea.Batch(cmds...)
 }
 
-func (t DepsTable) View() string {
+func (t DepsTable) Render() string {
 	rowCount := t.rowCount()
 	rows := make([]string, rowCount)
 	for i := range rows {

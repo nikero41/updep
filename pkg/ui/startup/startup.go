@@ -6,9 +6,9 @@ import (
 	"updep/pkg/config"
 	packagemanager "updep/pkg/packageManager"
 
-	"github.com/charmbracelet/bubbles/spinner"
-	tea "github.com/charmbracelet/bubbletea"
-	"github.com/charmbracelet/lipgloss"
+	"charm.land/bubbles/v2/spinner"
+	tea "charm.land/bubbletea/v2"
+	"charm.land/lipgloss/v2"
 )
 
 // TODO: handle not installed dependencies
@@ -37,7 +37,7 @@ func (s StartUp) Init() tea.Cmd {
 	return tea.Batch(s.spinner.Tick, getPackageManager())
 }
 
-func (s StartUp) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
+func (s *StartUp) Update(msg tea.Msg) tea.Cmd {
 	var cmds []tea.Cmd
 
 	switch msg := msg.(type) {
@@ -59,7 +59,7 @@ func (s StartUp) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		}
 
 	case OutdatedDependenciesMsg:
-		return s, func() tea.Msg {
+		return func() tea.Msg {
 			return StartUpCompletedMsg{
 				Dependencies: msg,
 				Pm:           s.pm,
@@ -75,13 +75,12 @@ func (s StartUp) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	}
 	cmds = append(cmds, cmd)
 
-	return s, tea.Batch(cmds...)
+	return tea.Batch(cmds...)
 }
 
-func (s StartUp) View() string {
+func (s StartUp) Render() string {
 	if s.pmListModel.Items() != nil {
 		return s.pmListModel.View()
 	}
-
 	return fmt.Sprintf("%v %s", s.spinner.View(), s.labelText)
 }

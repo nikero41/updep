@@ -68,34 +68,31 @@ func (m AppModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 
 	switch m.screen {
 	case StartUp:
-		newModel, cmd := m.startUpModel.Update(msg)
-		newStartUpModel := newModel.(startup.StartUp)
-		m.startUpModel = &newStartUpModel
+		cmd := m.startUpModel.Update(msg)
 		cmds = append(cmds, cmd)
 	case Choice:
-		newModel, cmd := m.depsTableModel.Update(msg)
-		newDepsTableModel := newModel.(depstable.DepsTable)
-		m.depsTableModel = &newDepsTableModel
+		cmd := m.depsTableModel.Update(msg)
 		cmds = append(cmds, cmd)
 	case Update:
-		newModel, cmd := m.updateModel.Update(msg)
-		newUpdateModel := newModel.(update.Update)
-		m.updateModel = &newUpdateModel
+		cmd := m.updateModel.Update(msg)
 		cmds = append(cmds, cmd)
 	}
 
 	return m, tea.Batch(cmds...)
 }
 
-func (m AppModel) View() string {
+func (m AppModel) View() tea.View {
+	var content string
 	switch m.screen {
 	case StartUp:
-		return m.startUpModel.View()
+		content = m.startUpModel.Render()
 	case Choice:
-		return m.depsTableModel.View()
+		content = m.depsTableModel.Render()
 	case Update:
-		return m.updateModel.View()
+		content = m.updateModel.Render()
 	default:
-		return ""
+		content = ""
 	}
+
+	return tea.NewView(content)
 }
