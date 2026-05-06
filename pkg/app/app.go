@@ -5,7 +5,7 @@ import (
 	"updep/pkg/ui/startup"
 	"updep/pkg/ui/update"
 
-	tea "github.com/charmbracelet/bubbletea"
+	tea "charm.land/bubbletea/v2"
 
 	packagemanager "updep/pkg/packageManager"
 )

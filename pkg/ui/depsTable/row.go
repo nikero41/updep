@@ -7,7 +7,7 @@ import (
 	"updep/pkg/dependency"
 	"updep/pkg/version"
 
-	"github.com/charmbracelet/lipgloss"
+	"charm.land/lipgloss/v2"
 )
 
 func renderRow(

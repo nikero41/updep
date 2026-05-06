@@ -72,4 +72,4 @@ MIT License - see [LICENSE](LICENSE) for details
 
 ## Acknowledgments
 
-Built with [Bubble Tea](https://github.com/charmbracelet/bubbletea) and [Lip Gloss](https://github.com/charmbracelet/lipgloss)
+Built with [Bubble Tea](https://charm.land/bubbletea/v2) and [Lip Gloss](https://charm.land/lipgloss/v2)

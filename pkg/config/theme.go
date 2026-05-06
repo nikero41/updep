@@ -1,9 +1,13 @@
 package config
 
-import "github.com/charmbracelet/lipgloss"
+import (
+	"image/color"
+
+	"charm.land/lipgloss/v2"
+)
 
 // NOTE: remove this once the final theme is decided
-var colorsValues = map[string]lipgloss.Color{
+var colorsValues = map[string]color.Color{
 	"Rosewater": lipgloss.Color("#f5e0dc"),
 	"Flamingo":  lipgloss.Color("#f2cdcd"),
 	"Pink":      lipgloss.Color("#f5c2e7"),
@@ -33,13 +37,13 @@ var colorsValues = map[string]lipgloss.Color{
 }
 
 type colors struct {
-	Primary          lipgloss.Color
-	PrimaryText      lipgloss.Color
-	Major            lipgloss.Color
-	Minor            lipgloss.Color
-	Patch            lipgloss.Color
-	ActiveBackground lipgloss.Color
-	Success          lipgloss.Color
+	Primary          color.Color
+	PrimaryText      color.Color
+	Major            color.Color
+	Minor            color.Color
+	Patch            color.Color
+	ActiveBackground color.Color
+	Success          color.Color
 }
 
 var Theme = colors{

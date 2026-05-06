@@ -4,9 +4,9 @@ import (
 	"updep/pkg/config"
 	packagemanager "updep/pkg/packageManager"
 
-	tea "github.com/charmbracelet/bubbletea"
+	tea "charm.land/bubbletea/v2"
 
-	"github.com/charmbracelet/bubbles/list"
+	"charm.land/bubbles/v2/list"
 )
 
 type PmList struct {

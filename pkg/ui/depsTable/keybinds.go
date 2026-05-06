@@ -4,8 +4,8 @@ import (
 	"updep/pkg/dependency"
 	"updep/pkg/device"
 
-	"github.com/charmbracelet/bubbles/key"
-	tea "github.com/charmbracelet/bubbletea"
+	"charm.land/bubbles/v2/key"
+	tea "charm.land/bubbletea/v2"
 )
 
 type KeyMap struct {
@@ -25,19 +25,19 @@ var keyMap = KeyMap{
 		key.WithHelp("↓/j", "down"),
 	),
 	ToTop: key.NewBinding(
-		key.WithKeys("g", tea.KeyHome.String()), // TODO: make it gg
+		key.WithKeys("g", tea.Key{Code: tea.KeyHome}.String()), // TODO: make it gg
 		key.WithHelp("g", "top"),
 	),
 	ToBottom: key.NewBinding(
-		key.WithKeys("G", tea.KeyEnd.String()),
+		key.WithKeys("G", tea.Key{Code: tea.KeyEnd}.String()),
 		key.WithHelp("G", "bottom"),
 	),
 	HalfPageUp: key.NewBinding(
-		key.WithKeys(tea.KeyCtrlU.String()),
+		key.WithKeys("ctrl+u"),
 		key.WithHelp("^u", "scroll up"),
 	),
 	HalfPageDown: key.NewBinding(
-		key.WithKeys(tea.KeyCtrlD.String()),
+		key.WithKeys("ctrl+d"),
 		key.WithHelp("^d", "scroll down"),
 	),
 
@@ -97,7 +97,7 @@ func (k KeyMap) FullHelp() [][]key.Binding {
 	}
 }
 
-func (t *DepsTable) handleKeyPress(msg tea.KeyMsg) tea.Cmd {
+func (t *DepsTable) handleKeyPress(msg tea.KeyPressMsg) tea.Cmd {
 	switch {
 	case key.Matches(msg, keyMap.Up):
 		if t.cursor > 0 {

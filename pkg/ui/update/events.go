@@ -6,7 +6,7 @@ import (
 	"updep/pkg/dependency"
 	packagemanager "updep/pkg/packageManager"
 
-	tea "github.com/charmbracelet/bubbletea"
+	tea "charm.land/bubbletea/v2"
 )
 
 type UpdateCompleteMsg struct {

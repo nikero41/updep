@@ -4,7 +4,7 @@ import (
 	"updep/pkg/config"
 	"updep/pkg/dependency"
 
-	"github.com/charmbracelet/lipgloss"
+	"charm.land/lipgloss/v2"
 )
 
 func (t *DepsTable) SetHeight(height int) {
