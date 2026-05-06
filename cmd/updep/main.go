@@ -1,16 +1,16 @@
 package main
 
 import (
+	"context"
 	"log/slog"
 	"os"
 
-	"github.com/spf13/cobra"
+	"github.com/charmbracelet/fang"
 
-	"updep/pkg/app"
 	"updep/pkg/logger"
-
-	tea "github.com/charmbracelet/bubbletea"
 )
+
+var loggerConfig *logger.LoggerConfig
 
 func main() {
 	defer func() {
@@ -20,37 +20,16 @@ func main() {
 		}
 	}()
 
-	if err := rootCmd.Execute(); err != nil {
+	var err error
+	loggerConfig, err = logger.New()
+	if err != nil {
+		slog.Error("error creating logger", "err", err)
+		os.Exit(1)
+	}
+	defer loggerConfig.Close()
+
+	if err := fang.Execute(context.Background(), rootCmd); err != nil {
 		slog.Error("error executing command", "err", err)
 		os.Exit(1)
 	}
-}
-
-var loggerConfig *logger.LoggerConfig
-
-var rootCmd = &cobra.Command{
-	Use: "updep",
-	PersistentPreRunE: func(cmd *cobra.Command, args []string) error {
-		var err error
-		loggerConfig, err = logger.New()
-		if err != nil {
-			slog.Error("error creating logger", "err", err)
-			return err
-		}
-		return nil
-	},
-	PersistentPostRun: func(cmd *cobra.Command, args []string) {
-		loggerConfig.Close()
-	},
-	Run: func(cmd *cobra.Command, args []string) {
-		p := tea.NewProgram(app.New())
-		defer p.Kill()
-		if _, err := p.Run(); err != nil {
-			slog.Error("error running program", "err", err)
-			os.Exit(1)
-		}
-	},
-}
-
-func init() {
 }

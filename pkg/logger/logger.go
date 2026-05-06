@@ -65,9 +65,12 @@ func (l LoggerConfig) SetLevel(level slog.Level) {
 	l.Level.Set(level)
 }
 
-func (l LoggerConfig) Close() error {
+func (l LoggerConfig) Close() {
 	slog.Debug("logger closing")
-	return l.File.Close()
+	err := l.File.Close()
+	if err != nil {
+		slog.Error("error closing logger", "err", err)
+	}
 }
 
 func getOrCreateDataFile(filePath string) (*os.File, error) {
