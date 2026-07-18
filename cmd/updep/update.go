@@ -13,9 +13,6 @@ updep update
 
 # Update a specific package
 updep update package
-
-# Update all packages in dry-run mode
-updep update --dry-run
 	`,
 	Run: func(cmd *cobra.Command, args []string) {
 		// TODO: implement
@@ -24,7 +21,6 @@ updep update --dry-run
 }
 
 func init() {
-	updateCmd.Flags().Bool("dry-run", false, "run in dry-run mode")
 	updateCmd.Flags().BoolP("all", "a", false, "update all packages")
 
 	rootCmd.AddCommand(updateCmd)
