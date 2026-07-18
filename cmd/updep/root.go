@@ -6,6 +6,7 @@ import (
 	"github.com/spf13/cobra"
 
 	"updep/pkg/app"
+	packagemanager "updep/pkg/packageManager"
 
 	tea "charm.land/bubbletea/v2"
 )
@@ -13,25 +14,26 @@ import (
 var rootCmd = &cobra.Command{
 	Use:     "updep",
 	Version: "0.0.1",
-	PersistentPreRunE: func(cmd *cobra.Command, args []string) error {
+	RunE: func(cmd *cobra.Command, args []string) error {
 		value, err := cmd.Flags().GetString("pm")
 		if err != nil {
 			return err
 		}
+		var pm packagemanager.PackageManager
 		switch value {
 		case "npm", "pnpm", "yarn", "bun":
-		// TODO: set package manager
+			pm, err = packagemanager.New(value)
+			if err != nil {
+				return err
+			}
 		case "":
 		default:
 			return errors.New("invalid package manager")
 		}
 
-		return nil
-	},
-	RunE: func(cmd *cobra.Command, args []string) error {
-		p := tea.NewProgram(app.New())
+		p := tea.NewProgram(app.New(pm))
 		defer p.Kill()
-		_, err := p.Run()
+		_, err = p.Run()
 		return err
 	},
 }
