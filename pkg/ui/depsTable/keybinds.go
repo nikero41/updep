@@ -61,7 +61,7 @@ var keyMap = KeyMap{
 		key.WithHelp("l", "update to latest version"),
 	),
 	ToggleTarget: key.NewBinding(
-		key.WithKeys(" "),
+		key.WithKeys("space"),
 		key.WithHelp("space", "toggle"),
 	),
 	SelectAll: key.NewBinding(
@@ -87,8 +87,6 @@ func (k KeyMap) FullHelp() [][]key.Binding {
 	return [][]key.Binding{
 		{
 			k.Up,
-			// TODO: add help from app
-			// k.Quit,
 			k.ToggleTarget,
 			k.Homepage,
 		},
