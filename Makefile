@@ -34,6 +34,11 @@ npm/platforms/%/bin/$(APP_NAME) npm/platforms/%/bin/$(APP_NAME).exe: $(PROJECT_F
 run:
 	@DEBUG=1 go run ./cmd/$(APP_NAME)
 
+.PHONY: lint
+lint:
+	go vet ./...
+	golangci-lint run
+
 .PHONY: dev-install
 dev-install:
 	@go install ./cmd/$(APP_NAME)
