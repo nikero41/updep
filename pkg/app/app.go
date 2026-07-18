@@ -27,13 +27,13 @@ type AppModel struct {
 	height         int
 }
 
-func New() *AppModel {
+func New(pm packagemanager.PackageManager) *AppModel {
 	return &AppModel{
 		startUpModel:   startup.New(),
 		depsTableModel: depstable.New(),
 		updateModel:    update.New(),
 		screen:         StartUp,
-		pm:             nil,
+		pm:             pm,
 		height:         0,
 	}
 }
