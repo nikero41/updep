@@ -6,36 +6,6 @@ import (
 	"charm.land/lipgloss/v2"
 )
 
-// NOTE: remove this once the final theme is decided
-var colorsValues = map[string]color.Color{
-	"Rosewater": lipgloss.Color("#f5e0dc"),
-	"Flamingo":  lipgloss.Color("#f2cdcd"),
-	"Pink":      lipgloss.Color("#f5c2e7"),
-	"Mauve":     lipgloss.Color("#cba6f7"),
-	"Red":       lipgloss.Color("#f38ba8"),
-	"Maroon":    lipgloss.Color("#eba0ac"),
-	"Peach":     lipgloss.Color("#fab387"),
-	"Yellow":    lipgloss.Color("#f9e2af"),
-	"Green":     lipgloss.Color("#a6e3a1"),
-	"Teal":      lipgloss.Color("#94e2d5"),
-	"Sky":       lipgloss.Color("#89dceb"),
-	"Sapphire":  lipgloss.Color("#74c7ec"),
-	"Blue":      lipgloss.Color("#89b4fa"),
-	"Lavender":  lipgloss.Color("#b4befe"),
-	"Text":      lipgloss.Color("#cdd6f4"),
-	"Subtext1":  lipgloss.Color("#bac2de"),
-	"Subtext0":  lipgloss.Color("#a6adc8"),
-	"Overlay2":  lipgloss.Color("#9399b2"),
-	"Overlay1":  lipgloss.Color("#7f849c"),
-	"Overlay0":  lipgloss.Color("#6c7086"),
-	"Surface2":  lipgloss.Color("#585b70"),
-	"Surface1":  lipgloss.Color("#45475a"),
-	"Surface0":  lipgloss.Color("#313244"),
-	"Base":      lipgloss.Color("#1e1e2e"),
-	"Mantle":    lipgloss.Color("#181825"),
-	"Crust":     lipgloss.Color("#11111b"),
-}
-
 type colors struct {
 	Primary          color.Color
 	PrimaryText      color.Color
@@ -47,11 +17,11 @@ type colors struct {
 }
 
 var Theme = colors{
-	Primary:          colorsValues["Mauve"],
-	PrimaryText:      colorsValues["Base"],
-	Major:            colorsValues["Red"],
-	Minor:            colorsValues["Peach"],
-	Patch:            colorsValues["Green"],
-	ActiveBackground: colorsValues["Surface1"],
-	Success:          colorsValues["Green"],
+	Primary:          lipgloss.Color("#cba6f7"),
+	PrimaryText:      lipgloss.Color("#1e1e2e"),
+	Major:            lipgloss.Color("#f38ba8"),
+	Minor:            lipgloss.Color("#fab387"),
+	Patch:            lipgloss.Color("#a6e3a1"),
+	ActiveBackground: lipgloss.Color("#45475a"),
+	Success:          lipgloss.Color("#a6e3a1"),
 }
