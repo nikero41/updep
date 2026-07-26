@@ -4,7 +4,10 @@
   "description": "updep binary for Windows x64",
   "author": "Stavros Nikolopoulos <snikoletopoulos@hotmail.com>",
   "license": "MIT",
-  "repository": "github:nikero41/updep",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/nikero41/updep.git"
+  },
   "bugs": "https://github.com/nikero41/updep/issues",
   "publishConfig": {
     "access": "public"
