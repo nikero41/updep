@@ -16,12 +16,12 @@ updep update package
 	`,
 	Run: func(cmd *cobra.Command, args []string) {
 		// TODO: implement
-		println("TODO: update")
+		println("TODO: uniplemented")
 	},
 }
 
 func init() {
 	updateCmd.Flags().BoolP("all", "a", false, "update all packages")
 
-	rootCmd.AddCommand(updateCmd)
+	// rootCmd.AddCommand(updateCmd)
 }

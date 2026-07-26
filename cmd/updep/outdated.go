@@ -6,10 +6,10 @@ var outdatedCmd = &cobra.Command{
 	Use: "outdated",
 	Run: func(cmd *cobra.Command, args []string) {
 		// TODO: implement
-		println("TODO: outdated")
+		println("TODO: uniplemented")
 	},
 }
 
 func init() {
-	rootCmd.AddCommand(outdatedCmd)
+	// rootCmd.AddCommand(outdatedCmd)
 }
