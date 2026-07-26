@@ -1,6 +1,6 @@
 {
   "name": "@nikero/updep-linux-x64",
-  "version": "0.1.0",
+  "version": "0.1.11",
   "description": "updep binary for Linux x64",
   "author": "Stavros Nikolopoulos <snikoletopoulos@hotmail.com>",
   "license": "MIT",

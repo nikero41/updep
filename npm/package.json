@@ -1,6 +1,6 @@
 {
   "name": "@nikero/updep",
-  "version": "0.1.0",
+  "version": "0.1.11",
   "description": "Interactive TUI for updating JavaScript dependencies",
   "author": "Stavros Nikolopoulos <snikoletopoulos@hotmail.com>",
   "license": "MIT",
@@ -30,12 +30,12 @@
     "postinstall": "node install.js"
   },
   "optionalDependencies": {
-    "@nikero/updep-darwin-arm64": "0.1.0",
-    "@nikero/updep-darwin-x64": "0.1.0",
-    "@nikero/updep-linux-arm64": "0.1.0",
-    "@nikero/updep-linux-x64": "0.1.0",
-    "@nikero/updep-win32-arm64": "0.1.0",
-    "@nikero/updep-win32-x64": "0.1.0"
+    "@nikero/updep-darwin-arm64": "0.1.11",
+    "@nikero/updep-darwin-x64": "0.1.11",
+    "@nikero/updep-linux-arm64": "0.1.11",
+    "@nikero/updep-linux-x64": "0.1.11",
+    "@nikero/updep-win32-arm64": "0.1.11",
+    "@nikero/updep-win32-x64": "0.1.11"
   },
   "engines": {
     "node": ">=18"
