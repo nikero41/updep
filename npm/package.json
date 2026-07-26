@@ -4,7 +4,10 @@
   "description": "Interactive TUI for updating JavaScript dependencies",
   "author": "Stavros Nikolopoulos <snikoletopoulos@hotmail.com>",
   "license": "MIT",
-  "repository": "github:nikero41/updep",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/nikero41/updep.git"
+  },
   "bugs": "https://github.com/nikero41/updep/issues",
   "publishConfig": {
     "access": "public"
@@ -21,7 +24,7 @@
     "package-manager"
   ],
   "bin": {
-    "updep": "./bin/updep.js"
+    "updep": "bin/updep.js"
   },
   "scripts": {
     "postinstall": "node install.js"
