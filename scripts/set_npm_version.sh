@@ -16,7 +16,7 @@ find ./npm/platforms -name "package.json" -execdir sh -c "npm pkg set version=$V
 
 pushd npm
 
-pkgs=$(npm pkg get optionalDependencies | jq -r "keys | .[]")
+pkgs=$(npm pkg get optionalDependencies --json | jq -r ".optionalDependencies | keys | .[]")
 
 echo -e "\n${YELLOW}📤 Updating platform versions on main package...${NC}\n"
 for pkg in $pkgs; do
