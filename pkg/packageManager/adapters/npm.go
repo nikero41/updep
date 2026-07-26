@@ -1,13 +1,17 @@
 package adapters
 
 import (
+	"bufio"
 	"encoding/json"
 	"fmt"
+	"io"
 	"log/slog"
 	"os/exec"
 	"strings"
+	"sync"
 
 	"updep/pkg/dependency"
+	"updep/pkg/packageManager/events"
 
 	"github.com/go-playground/validator/v10"
 )
@@ -74,25 +78,60 @@ func (pm Npm) GetOutdated() ([]dependency.Dependency, error) {
 	return outdatedDeps, nil
 }
 
-func (pm Npm) Update(deps []dependency.Dependency) ([]byte, error) {
-	args := make([]string, len(deps)+1)
-	args[0] = "install"
+func (pm Npm) Update(deps []dependency.Dependency, outputChan chan<- events.PmOutputEvent) {
+	args := make([]string, len(deps)+3)
 	for i, d := range deps {
-		args[i+1] = d.Name
+		args[i] = d.Name
 		if d.Target == dependency.Latest {
-			args[i+1] += "@latest"
+			args[i] += "@latest"
 		}
 	}
+	args = append([]string{"--color=always", "install"}, args...)
 	slog.Info("install args:", "args", args)
 
-	output, err := exec.Command("npm", args...).CombinedOutput()
+	cmd := exec.Command("npm", args...)
+
+	stdout, err := cmd.StdoutPipe()
 	if err != nil {
-		return nil, err
+		panic(err)
+	}
+	stderr, err := cmd.StderrPipe()
+	if err != nil {
+		panic(err)
 	}
 
-	return output, nil
+	var wg sync.WaitGroup
+	wg.Add(2)
+	go scan(&wg, outputChan, stdout)
+	go scan(&wg, outputChan, stderr)
+	go func() {
+		wg.Wait()
+		outputChan <- events.PmOutputEvent{
+			Err:  nil,
+			Done: true,
+		}
+		close(outputChan)
+	}()
+
+	_ = cmd.Start()
 }
 
-func (npm Npm) String() string {
-	return npm.Name()
+func scan(wg *sync.WaitGroup, c chan<- events.PmOutputEvent, r io.ReadCloser) {
+	defer wg.Done()
+	s := bufio.NewScanner(r)
+
+	for s.Scan() {
+		c <- events.PmOutputEvent{Output: s.Text()}
+	}
+
+	if err := s.Err(); err != nil {
+		c <- events.PmOutputEvent{
+			Err:  s.Err(),
+			Done: false,
+		}
+	}
+}
+
+func (pm Npm) String() string {
+	return pm.Name()
 }

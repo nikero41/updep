@@ -6,7 +6,9 @@ import (
 
 	"updep/pkg/config"
 	"updep/pkg/dependency"
+	"updep/pkg/helpers"
 	packagemanager "updep/pkg/packageManager"
+	"updep/pkg/packageManager/events"
 	"updep/pkg/version"
 
 	"charm.land/bubbles/v2/spinner"
@@ -16,10 +18,10 @@ import (
 
 type Update struct {
 	spinner      spinner.Model
-	labelText    string
 	Dependencies []dependency.Dependency
 	Pm           packagemanager.PackageManager
-	output       []byte
+	outputChan   chan events.PmOutputEvent
+	output       []string
 	isDone       bool
 }
 
@@ -29,23 +31,30 @@ func New() *Update {
 	s.Style = lipgloss.NewStyle().Foreground(config.Theme.Primary)
 
 	return &Update{
-		spinner:   s,
-		labelText: "Updating packages",
-		isDone:    false,
+		spinner:    s,
+		outputChan: make(chan events.PmOutputEvent),
+		isDone:     false,
 	}
 }
 
 func (u Update) Init() tea.Cmd {
-	return tea.Batch(u.spinner.Tick, updateDependencies(u.Pm, u.Dependencies))
+	u.Pm.Update(u.Dependencies, u.outputChan)
+	return tea.Batch(u.spinner.Tick, helpers.WaitForChan(u.outputChan))
 }
 
 func (u *Update) Update(msg tea.Msg) tea.Cmd {
 	var cmds []tea.Cmd
 
 	switch msg := msg.(type) {
-	case UpdateCompleteMsg:
-		u.output = msg.output
-		cmds = append(cmds, tea.Quit)
+	case helpers.ChannelMsg[events.PmOutputEvent]:
+		u.output = append(u.output, msg.Result.Output)
+		if msg.Result.Done {
+			u.isDone = true
+			close(u.outputChan)
+			cmds = append(cmds, tea.Quit)
+		} else {
+			cmds = append(cmds, helpers.WaitForChan(u.outputChan))
+		}
 	}
 
 	var cmd tea.Cmd
@@ -57,7 +66,8 @@ func (u *Update) Update(msg tea.Msg) tea.Cmd {
 
 func (u Update) Render() string {
 	if !u.isDone {
-		return fmt.Sprintf("%v %s", u.spinner.View(), u.labelText)
+		spinner := fmt.Sprintf("%v %s", u.spinner.View(), "Updating packages")
+		return lipgloss.JoinVertical(lipgloss.Left, strings.Join(u.output, "\n"), spinner)
 	}
 
 	var depNames []string
@@ -75,10 +85,12 @@ func (u Update) Render() string {
 		depNames = append(depNames, depStyle.Render(d.Name))
 	}
 
-	return fmt.Sprintf(
-		"\n\n%v Updated %d packages: %v",
+	report := fmt.Sprintf(
+		"%v Updated %d packages: %v",
 		checkMarkStyle.Render("✓"),
 		len(u.Dependencies),
 		strings.Join(depNames, ", "),
 	)
+
+	return lipgloss.JoinVertical(lipgloss.Left, strings.Join(u.output, "\n"), report)
 }

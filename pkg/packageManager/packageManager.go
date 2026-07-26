@@ -9,12 +9,13 @@ import (
 
 	"updep/pkg/dependency"
 	"updep/pkg/packageManager/adapters"
+	"updep/pkg/packageManager/events"
 )
 
 type PackageManager interface {
 	Name() string
 	GetOutdated() ([]dependency.Dependency, error)
-	Update(deps []dependency.Dependency) ([]byte, error)
+	Update(deps []dependency.Dependency, outputChan chan<- events.PmOutputEvent)
 }
 
 var lockfilePmMapper = map[string]string{
